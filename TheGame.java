@@ -12,21 +12,25 @@
  * 4) a healthbar. This will show how many lives the kitten has left. The cat will have nine lives represented as hearts (because cats have 9 lives).
  * When the cat runs into a dog, the cat will lose 3 lives.
  * @author gabriella
- * @version 22/05
+ * @version 23/05
  */
 import javax.swing.*;
 import java.awt.*;
 public class TheGame extends JFrame 
 {
-    int colomns = 18;//this is setting the number of cell colomns in the maze to 21.
-    int rows = 22; //sets the cell rows in the maze to 18.
-    int border = 20; //how far the maze is away from the edge of the panel.
+    int colomns = 28;//this is setting the number of cell colomns in the maze to 21.
+    int rows = 36; //sets the cell rows in the maze to 18.
+    //int border = 20; //how far the maze is away from the edge of the panel.
+    int mazeRows=31;
+    int mazeColomns=28;
     int cellSize = 25;// this sets the size of one cell to 25 pixels. 
-    private int [][] maze;// this makes an array which the values of maze[i][j] can hold a value of being a wall or a road that the cat and dogs can walk through.
+    private int[][] maze;// this makes an array which the values of maze[i][j] can hold a value of being a wall or a road that the cat and dogs can walk through.
     //the road has little white dots/pellets the cat can eat. When the cat eats the pellet the road become empty.
     private static int wall = 0;
-    private static int road = 1;
-    private static int roadDot = 2;//a road with a white dot
+    private static int roadDot = 1;//a road with a white dot
+    private static int fish = 2;//a road with
+    private static int emptyRoad = 3;
+    private static int emptySpace = 4;
     /**
      * Constructor for objects of class extension
      */
@@ -42,7 +46,41 @@ public class TheGame extends JFrame
         //this.maze = makeMaze();
     }
     public void makeMaze(){
-        int [][] maze;
+        //these are the values of the array that makes up the maze. 0's are walls, 1's are roads with dots,
+        //2's are pellets, 3's are empty roads 4's are empty spaces that the cat can't go in. (The centre, where all the 4's are, is where the dogs will appear. The cat can't go there.)      
+        int maze[][] = 
+            {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+             {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0},
+             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
+             {0,2,0,4,4,0,1,0,4,4,4,0,1,0,0,1,0,4,4,4,0,1,0,4,4,0,1,0},
+             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
+             {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
+             {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
+             {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
+             {0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0},
+             {0,0,0,0,0,0,1,0,0,0,0,0,3,0,0,3,0,0,0,0,0,1,0,0,0,0,0,0},
+             {4,4,4,4,4,0,1,0,0,0,0,0,3,0,0,3,0,0,0,0,0,1,0,4,4,4,4,4},
+             {4,4,4,4,4,0,1,0,0,3,3,3,3,3,3,3,3,3,3,0,0,1,0,4,4,4,4,4},
+             {4,4,4,4,4,0,1,0,0,3,0,0,0,4,4,0,0,0,3,0,0,1,0,4,4,4,4,4},
+             {0,0,0,0,0,0,1,0,0,3,0,4,4,4,4,4,4,0,3,0,0,1,0,0,0,0,0,0},
+             {3,3,3,3,3,3,1,3,3,3,0,4,4,4,4,4,4,0,3,3,3,1,3,3,3,3,3,3},
+             {0,0,0,0,0,0,1,0,0,3,0,4,4,4,4,4,4,0,3,0,0,1,0,0,0,0,0,0},
+             {4,4,4,4,4,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,4,4,4,4,4},
+             {4,4,4,4,4,0,1,0,0,3,3,3,3,3,3,3,3,3,3,0,0,1,0,4,4,4,4,4},
+             {4,4,4,4,4,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,4,4,4,4,4},
+             {0,0,0,0,0,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,0,0,0,0,0},
+             {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0},
+             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
+             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
+             {0,2,1,1,0,0,1,1,1,1,1,1,1,3,3,1,1,1,1,1,1,1,0,0,1,1,2,0},
+             {0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0},
+             {0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0},
+             {0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0},
+             {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
+             {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
+             {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
+             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+        //now i need to print the array
+        for(int i = 0; i < 28; i++){}
+            }
     }
-
-}
