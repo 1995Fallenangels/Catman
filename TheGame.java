@@ -12,102 +12,54 @@
  * 4) a healthbar. This will show how many lives the kitten has left. The cat will have nine lives represented as hearts (because cats have 9 lives).
  * When the cat runs into a dog, the cat will lose 3 lives.
  * @author gabriella
- * @version 24/05
+ * @version 27/05
  */
 import javax.swing.*;
 import java.awt.*;
 public class TheGame extends JFrame 
 {
-    int colomns = 28;//this is setting the number of cell colomns in the maze to 21.
+    int columns = 28;//this is setting the number of cell colomns in the maze to 21.
     int rows = 36; //sets the cell rows in the maze to 18.
     int topBorder = 3; //how far the maze is away from the edge of the panel.
     int mazeRows=31;
     int mazeColumns=28;
-    int cellSize = 25;// this sets the size of one cell to 25 pixels. 
+    int cellSize = 24;// this sets the size of one cell to 25 pixels. 
     private int[][] maze;// this makes an array which the values of maze[i][j] can hold a value of being a wall or a road that the cat and dogs can walk through.
     //the road has little white dots/pellets the cat can eat. When the cat eats the pellet the road become empty.
-    private static int wall = 0;
+    private static int river = 0;//a river acts as a wall the cat can't walk through.
     private static int roadDot = 1;//a road with a white dot
-    private static int fish = 2;//a road with
-    private static int emptyRoad = 3;
-    private static int emptySpace = 4;
+    private static int fish = 2;//a road with a fish, which acts as a power up pellet for the kitty.
+    private static int emptyRoad = 3;//this is a road without a dot
+    private static int emptySpace = 4;//this is a road that the cat doesn't go in/ it's a road out of bounds.
     /**
      * Constructor for objects of class extension
      */
     public TheGame(){
-        JFrame window = new JFrame("Catman");
-        window.setPreferredSize(new Dimension((cellSize*colomns),(cellSize*rows)));//sets the size of the window
-        window.getContentPane().setBackground(new Color(255,238,238));// I made the background colour baby pink. This correlates to my relevant implications of aesthetics
-        setLocationRelativeTo(null);//this is meant to set the window to the middle of the computer screen.
-        window.setDefaultCloseOperation(EXIT_ON_CLOSE);//makes the window close when it needs to
-        window.pack();//this sizes the window to the preffered size
-        window.toFront();//makes the game the focused window.
-        window.setVisible(true);//makes it visible
-        System.out.println("hi");
+        //JFrame window = new JFrame("Catman");
+        this.setTitle("Catman");
+        this.setPreferredSize(new Dimension((cellSize*columns),(cellSize*rows)));//sets the size of the window
+        this.getContentPane().setBackground(new Color(255,238,238));// I made the background colour baby pink. This correlates to my relevant implications of aesthetics
+        this.setLayout(null);//this is meant to set the window to the middle of the computer screen.
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);//makes the window close when it needs to
+        this.pack();//this sizes the window to the preffered size
+        this.toFront();//makes the game the focused window.
+        this.setVisible(true);//makes it visible
         repaint();
     }
-    public void makeMaze(Graphics g){
-        //these are the values of the array that makes up the maze. 0's are walls, 1's are roads with dots,
-        //2's are pellets, 3's are empty roads 4's are empty spaces that the cat can't go in. (The centre, where all the 4's are, is where the dogs will appear. The cat can't go there.)      
-        super.paint(g);
-        Graphics2D g2 = (Graphics2D) g;
-        int maze[][] = 
-            {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-             {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0},
-             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
-             {0,2,0,4,4,0,1,0,4,4,4,0,1,0,0,1,0,4,4,4,0,1,0,4,4,0,1,0},
-             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
-             {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
-             {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
-             {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
-             {0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0},
-             {0,0,0,0,0,0,1,0,0,0,0,0,3,0,0,3,0,0,0,0,0,1,0,0,0,0,0,0},
-             {4,4,4,4,4,0,1,0,0,0,0,0,3,0,0,3,0,0,0,0,0,1,0,4,4,4,4,4},
-             {4,4,4,4,4,0,1,0,0,3,3,3,3,3,3,3,3,3,3,0,0,1,0,4,4,4,4,4},
-             {4,4,4,4,4,0,1,0,0,3,0,0,0,4,4,0,0,0,3,0,0,1,0,4,4,4,4,4},
-             {0,0,0,0,0,0,1,0,0,3,0,4,4,4,4,4,4,0,3,0,0,1,0,0,0,0,0,0},
-             {3,3,3,3,3,3,1,3,3,3,0,4,4,4,4,4,4,0,3,3,3,1,3,3,3,3,3,3},
-             {0,0,0,0,0,0,1,0,0,3,0,4,4,4,4,4,4,0,3,0,0,1,0,0,0,0,0,0},
-             {4,4,4,4,4,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,4,4,4,4,4},
-             {4,4,4,4,4,0,1,0,0,3,3,3,3,3,3,3,3,3,3,0,0,1,0,4,4,4,4,4},
-             {4,4,4,4,4,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,4,4,4,4,4},
-             {0,0,0,0,0,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,0,0,0,0,0},
-             {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0},
-             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
-             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
-             {0,2,1,1,0,0,1,1,1,1,1,1,1,3,3,1,1,1,1,1,1,1,0,0,1,1,2,0},
-             {0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0},
-             {0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0},
-             {0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0},
-             {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
-             {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
-             {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
-             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-        //now i need to print the array
-        for(int i = 0; i < mazeRows; i++){
-            for(int j = 0; j<mazeColumns; j++){
-                System.out.print(maze[j][i]);
-                switch (maze[j][i]){
-                    case 0:
-                        g2.setColor(Color.BLACK);
-                        g2.fillRect(i*cellSize,j*cellSize, cellSize, cellSize);
-                        System.out.print("hi");
-                    case 1:
-                        g2.setColor(new Color(255,238,238));
-                        break;
-                }    
-                }
-            }
-        }
+    @Override
     public void paint(Graphics g){
-        System.out.println("hi");
+        //these are the values of the array that makes up the maze. 0's are walls, 1's are roads with dots,
+        //2's are pellets, 3's are empty roads 4's are empty spaces that the cat can't go in. (The centre, where all the 4's are, is where the dogs will appear. The cat can't go there.)
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
         int maze[][] = 
-            {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {//{4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
+             //{4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
+             //{4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
+             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
              {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0},
              {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
-             {0,2,0,4,4,0,1,0,4,4,4,0,1,0,0,1,0,4,4,4,0,1,0,4,4,0,1,0},
+             {0,2,0,4,4,0,1,0,4,4,4,0,1,0,0,1,0,4,4,4,0,1,0,4,4,0,2,0},
              {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
              {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
              {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
@@ -127,25 +79,31 @@ public class TheGame extends JFrame
              {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0},
              {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
              {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
-             {0,2,1,1,0,0,1,1,1,1,1,1,1,3,3,1,1,1,1,1,1,1,0,0,1,1,2,0},
+             {0,2,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,2,0},
              {0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0},
              {0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0},
              {0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0},
              {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
              {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
              {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
-             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+             //{4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
+             /*{4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},*/};
         //now i need to print the array
-        for(int i = 0; i < mazeRows; i++){
-            for(int j = 0; j<mazeColumns; j++){
-                System.out.print(maze[j][i]);
+        //later i need to add a distance between the maze and the top and bottom of the window so I can add a scorekeep in the top right corner and the healthbar at the bottom left. 
+        //also need to fix the fact that the first row isn't seen because of the window bar. (I need to fix the .pack())
+        int diameter= 5;
+        for(int i = 0; i < mazeColumns; i++){
+            for(int j = 0; j< mazeRows; j++){
                 switch (maze[j][i]){
                     case 0:
-                        g2.setColor(Color.BLACK);
+                        g2.setColor(new Color(62,164,240));//setting the colour to blue for water
                         g2.fillRect(i*cellSize,j*cellSize, cellSize, cellSize);
-                        System.out.print("hi");
                     case 1:
-                        g2.setColor(new Color(255,238,238));
+                        //i need to draw a white dot in the middle of the road
+                        g2.fillRect(i*cellSize,j*cellSize, cellSize, cellSize);//doing fillRect for now just for testing. I need to change it to fillOval later and figure out how to print the circles in the middle.
+                        //g2.fillOval((i*cellSize)-diameter, (j*cellSize)-diameter, diameter, diameter); //need to fix this
+                        g2.setColor(new Color (225,225,225));//setting the colour to white, but need to change it because it looks grey.
                         break;
                 }    
                 }
