@@ -32,7 +32,38 @@ public class TheGame extends JFrame implements ActionListener, KeyListener
     int mazeRows=31;
     int mazeColumns=28;
     int cellSize = 23;// this sets the size of one cell to 25 pixels. 
-    private int[][] maze;// this makes an array which the values of maze[i][j] can hold a value of being a wall or a road that the cat and dogs can walk through.
+    private int[][] maze =
+            {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0},
+            {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
+            {0,2,0,4,4,0,1,0,4,4,4,0,1,0,0,1,0,4,4,4,0,1,0,4,4,0,2,0},
+            {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
+            {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
+            {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
+            {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
+            {0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0},
+            {0,0,0,0,0,0,1,0,0,0,0,0,3,0,0,3,0,0,0,0,0,1,0,0,0,0,0,0},
+            {4,4,4,4,4,0,1,0,0,0,0,0,3,0,0,3,0,0,0,0,0,1,0,4,4,4,4,4},
+            {4,4,4,4,4,0,1,0,0,3,3,3,3,3,3,3,3,3,3,0,0,1,0,4,4,4,4,4},
+            {4,4,4,4,4,0,1,0,0,3,0,0,0,4,4,0,0,0,3,0,0,1,0,4,4,4,4,4},
+            {0,0,0,0,0,0,1,0,0,3,0,4,4,4,4,4,4,0,3,0,0,1,0,0,0,0,0,0},
+            {3,3,3,3,3,3,1,3,3,3,0,4,4,4,4,4,4,0,3,3,3,1,3,3,3,3,3,3},
+            {0,0,0,0,0,0,1,0,0,3,0,4,4,4,4,4,4,0,3,0,0,1,0,0,0,0,0,0},
+            {4,4,4,4,4,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,4,4,4,4,4},
+            {4,4,4,4,4,0,1,0,0,3,3,3,3,3,3,3,3,3,3,0,0,1,0,4,4,4,4,4},
+            {4,4,4,4,4,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,4,4,4,4,4},
+            {0,0,0,0,0,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,0,0,0,0,0},
+            {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0},
+            {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
+            {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
+            {0,2,1,1,0,0,1,1,1,1,1,1,1,1,5,1,1,1,1,1,1,1,0,0,1,1,2,0},
+            {0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0},
+            {0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0},
+            {0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0},
+            {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
+            {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
+            {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},};// this makes an array which the values of maze[i][j] can hold a value of being a wall or a road that the cat and dogs can walk through.
     //the road has little white dots/pellets the cat can eat. When the cat eats the pellet the road become empty.
     private static int river = 0;//a river acts as a wall the cat can't walk through.
     private static int roadDot = 1;//a road with a white dot
@@ -75,38 +106,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener
         //2's are pellets, 3's are empty roads 4's are empty spaces that the cat can't go in. (The centre, where all the 4's are, is where the dogs will appear. The cat can't go there.)
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
-        int maze[][] = 
-            {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-             {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0},
-             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
-             {0,2,0,4,4,0,1,0,4,4,4,0,1,0,0,1,0,4,4,4,0,1,0,4,4,0,2,0},
-             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
-             {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
-             {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
-             {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
-             {0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0},
-             {0,0,0,0,0,0,1,0,0,0,0,0,3,0,0,3,0,0,0,0,0,1,0,0,0,0,0,0},
-             {4,4,4,4,4,0,1,0,0,0,0,0,3,0,0,3,0,0,0,0,0,1,0,4,4,4,4,4},
-             {4,4,4,4,4,0,1,0,0,3,3,3,3,3,3,3,3,3,3,0,0,1,0,4,4,4,4,4},
-             {4,4,4,4,4,0,1,0,0,3,0,0,0,4,4,0,0,0,3,0,0,1,0,4,4,4,4,4},
-             {0,0,0,0,0,0,1,0,0,3,0,4,4,4,4,4,4,0,3,0,0,1,0,0,0,0,0,0},
-             {3,3,3,3,3,3,1,3,3,3,0,4,4,4,4,4,4,0,3,3,3,1,3,3,3,3,3,3},
-             {0,0,0,0,0,0,1,0,0,3,0,4,4,4,4,4,4,0,3,0,0,1,0,0,0,0,0,0},
-             {4,4,4,4,4,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,4,4,4,4,4},
-             {4,4,4,4,4,0,1,0,0,3,3,3,3,3,3,3,3,3,3,0,0,1,0,4,4,4,4,4},
-             {4,4,4,4,4,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,4,4,4,4,4},
-             {0,0,0,0,0,0,1,0,0,3,0,0,0,0,0,0,0,0,3,0,0,1,0,0,0,0,0,0},
-             {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0},
-             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
-             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
-             {0,2,1,1,0,0,1,1,1,1,1,1,1,1,5,1,1,1,1,1,1,1,0,0,1,1,2,0},
-             {0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0},
-             {0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0},
-             {0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0},
-             {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
-             {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
-             {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
-             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},};
+
         //now i need to print the array
         for(int i = 0; i < mazeColumns; i++){
             for(int j = 0; j< mazeRows; j++){
@@ -155,52 +155,57 @@ public class TheGame extends JFrame implements ActionListener, KeyListener
                 }
             }
     }
-    @Override
+@Override
     public void actionPerformed(ActionEvent e){
-         repaint();
+
     }
     public void up(){
-        initialCatPos = maze[catPosY][catPosX];
-        RoadPos = maze[catPosY-1][catPosX];
-        maze[catPosY-1][catPosX] = initialCatPos;
-        maze[catPosY][catPosX] = RoadPos;
+        if (maze[catPosY-1][catPosX]==1||maze[catPosY-1][catPosX]== 2 ||maze[catPosY-1][catPosX]== 3){
+            catPosY--;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY+1][catPosX] = 3;
+            repaint();
+        }
     }
     public void down(){
-        initialCatPos = maze[catPosY][catPosX];
-        RoadPos = maze[catPosY+1][catPosX];
-        maze[catPosY+1][catPosX] = initialCatPos;
-        maze[catPosY][catPosX] = RoadPos;
+        if (maze[catPosY+1][catPosX]==1||maze[catPosY+1][catPosX]== 2 ||maze[catPosY+1][catPosX]== 3){
+            catPosY++;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY-1][catPosX] = 3;
+            repaint();
+        }
+
     }
     public void left(){
-        initialCatPos = maze[catPosY][catPosX];
-        RoadPos = maze[catPosY][catPosX-1];
-        maze[catPosY][catPosX-1] = initialCatPos;
-        maze[catPosY][catPosX] = RoadPos;
+        if (maze[catPosY][catPosX-1]==1||maze[catPosY][catPosX-1]== 2 ||maze[catPosY][catPosX-1]== 3){
+            catPosX--;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY][catPosX+1] = 3;
+            repaint();
+        }
     }
     public void right(){
-        initialCatPos = maze[catPosY][catPosX];
-        RoadPos = maze[catPosY][catPosX+1];
-        maze[catPosY][catPosX+1] = initialCatPos;
-        maze[catPosY][catPosX] = RoadPos;
+        if (maze[catPosY][catPosX+1]==1||maze[catPosY][catPosX+1]== 2 ||maze[catPosY][catPosX+1]== 3){
+            catPosX++;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY][catPosX-1] = 3;
+            repaint();
+        }
     }
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();   
         if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W){
             up();
-            System.out.println("Up Arrow Pressed");
         }
         if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S){
             down();
-            System.out.println("down Arrow Pressed");
         }
         if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A){
             left();
-            System.out.println("left Arrow Pressed");
         }
         if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
             right();
-            System.out.println("right Arrow Pressed");
         }
     }
     @Override
