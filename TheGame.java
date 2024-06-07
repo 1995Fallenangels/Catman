@@ -19,10 +19,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.ActionEvent;//actionlistener
 import javax.swing.ImageIcon;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.awt.Image;
 public class TheGame extends JFrame implements ActionListener, KeyListener
 {
@@ -38,7 +34,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener
             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
             {0,2,0,4,4,0,1,0,4,4,4,0,1,0,0,1,0,4,4,4,0,1,0,4,4,0,2,0},
             {0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0},
-            {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
+            {0,1,1,1,1,1,1,1,1,1,1,1,1,1,6,1,1,1,1,1,1,1,1,1,1,1,1,0},
             {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
             {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
             {0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0},
@@ -63,7 +59,8 @@ public class TheGame extends JFrame implements ActionListener, KeyListener
             {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
             {0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0},
             {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},};// this makes an array which the values of maze[i][j] can hold a value of being a wall or a road that the cat and dogs can walk through.
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},};
+    // this makes an array which the values of the maze and can hold a value of being a wall or a road that the cat and dogs can walk through.
     //the road has little white dots/pellets the cat can eat. When the cat eats the pellet the road become empty.
     private static int river = 0;//a river acts as a wall the cat can't walk through.
     private static int roadDot = 1;//a road with a white dot
@@ -72,18 +69,22 @@ public class TheGame extends JFrame implements ActionListener, KeyListener
     private static int emptySpace = 4;//this is a road that the cat doesn't go in/ it's a road out of bounds.
     final static int yOffset = 60;//added this because if i don't, there's no distance between the window bar and the frame and the top part of the frame isn't seen.
     boolean gameRunning= false;//this is if the game starts playing, it will turn to true.
-    final String leftCat = "catLeft.png";
+    String leftCat = "catLeft.png";
+    String rightCat = "catRight.png";
+    String downCat = "catDown.png";
+    String upCat = "catUp.png";
     int diameter= 5;//diameter of the black dot in the middle
     int fishDiameter= 18;//diameter of the 'power up' pellets/fish
     int catPosX= 14;//the x coordinate of the cat 
     int catPosY = 23;//the y coordinate of the cat
-    int initialCatPos;
-    int RoadPos;
-    ImageIcon catIcon = new ImageIcon(leftCat);
-    Image leftCatImage = catIcon.getImage();
-    Image modifiedCatLeftImage= leftCatImage.getScaledInstance(cellSize*2, cellSize*2, java.awt.Image.SCALE_SMOOTH);//resizing the image
+    String catPic = leftCat;
+    ImageIcon catIcon = new ImageIcon(catPic);
+    Image catImage = catIcon.getImage();
+    Image modifiedCatImage= catImage.getScaledInstance(cellSize*2, cellSize*2, java.awt.Image.SCALE_SMOOTH);//resizing the image
     double catVelX = 0;//velocity of the cat x axis
     double catVelY = 0;//velocity of the cat y axis
+    int catScore;
+    boolean isGameRunning = false;
     /**
     * Constructor for objects of class extension
     */
@@ -146,51 +147,158 @@ public class TheGame extends JFrame implements ActionListener, KeyListener
                         g2.setColor(new Color(255,238,238));
                         g2.fillRect(i*cellSize,j*cellSize+yOffset, cellSize, cellSize);
                         //printing the cat png
-                        catIcon = new ImageIcon(modifiedCatLeftImage);
-                        int catWidth = catPosX*cellSize+(cellSize-modifiedCatLeftImage.getWidth(this)) / 2;//getting the width of the cat png
-                        int catHeight = catPosY*cellSize+(cellSize-modifiedCatLeftImage.getHeight(this)) / 2+yOffset;//getting the height of the cat png
+                        ImageIcon catIcon = new ImageIcon(catPic);
+                        Image catImage = catIcon.getImage();
+                        Image modifiedCatImage= catImage.getScaledInstance(cellSize*2, cellSize*2, java.awt.Image.SCALE_SMOOTH);
+                        catIcon = new ImageIcon(modifiedCatImage);
+                        int catWidth = catPosX*cellSize+(cellSize-modifiedCatImage.getWidth(this)) / 2;//getting the width of the cat png
+                        int catHeight = catPosY*cellSize+(cellSize-modifiedCatImage.getHeight(this)) / 2+yOffset;//getting the height of the cat png
                         catIcon.paintIcon(this,g,catWidth,catHeight-2);//printing the cat in the center of cell 5.
                         break;
+                    case 6:
+                        g2.setColor(new Color(255,238,238));
+                        g2.fillRect(i*cellSize,j*cellSize+yOffset, cellSize, cellSize);//creates the background pink
+                        g2.setColor(new Color (	255,	32,	25));
+                        g2.fillOval(i*cellSize+(cellSize-fishDiameter)/2, j*cellSize+(cellSize-fishDiameter)/2+yOffset, fishDiameter, fishDiameter);
+                        break;
+
                 }    
                 }
             }
+
     }
 @Override
     public void actionPerformed(ActionEvent e){
 
     }
     public void up(){
-        if (maze[catPosY-1][catPosX]==1||maze[catPosY-1][catPosX]== 2 ||maze[catPosY-1][catPosX]== 3){
+        if (maze[catPosY-1][catPosX]==1){
+            catPic = upCat;
+            catScore += 200;
+            //System.out.println(catScore);
             catPosY--;
             maze[catPosY][catPosX] = 5;
             maze[catPosY+1][catPosX] = 3;
             repaint();
+        } else if (maze[catPosY-1][catPosX]== 2) {
+            catPic = upCat;
+            catScore += 400;
+            catPosY--;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY+1][catPosX] = 3;
+            repaint();
+        } else if (maze[catPosY-1][catPosX]== 3) {
+            catPic = upCat;
+            catPosY--;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY+1][catPosX] = 3;
+            repaint();
+        } else if (maze[catPosY-1][catPosX]== 6) {
+            catPic = upCat;
+            catPosY--;
+            catScore += 2000;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY+1][catPosX] = 3;
+            repaint();
         }
+        System.out.println(catScore);
     }
     public void down(){
-        if (maze[catPosY+1][catPosX]==1||maze[catPosY+1][catPosX]== 2 ||maze[catPosY+1][catPosX]== 3){
+        if (maze[catPosY+1][catPosX]== 1){
+            catPic = downCat;
+            catScore += 200;
             catPosY++;
             maze[catPosY][catPosX] = 5;
             maze[catPosY-1][catPosX] = 3;
             repaint();
+        } else if (maze[catPosY+1][catPosX]== 2) {
+            catPic = downCat;
+            catPosY++;
+            catScore+= 400;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY-1][catPosX] = 3;
+            repaint();
         }
-
+        else if (maze[catPosY+1][catPosX]== 3) {
+            catPic = downCat;
+            catPosY++;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY-1][catPosX] = 3;
+            repaint();
+        } else if (maze[catPosY+1][catPosX]== 6) {
+            catPic = downCat;
+            catPosY++;
+            catScore+= 2000;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY-1][catPosX] = 3;
+            repaint();
+        }
+        System.out.println(catScore);
     }
     public void left(){
-        if (maze[catPosY][catPosX-1]==1||maze[catPosY][catPosX-1]== 2 ||maze[catPosY][catPosX-1]== 3){
+        if (maze[catPosY][catPosX-1]== 1){
+            catPic = leftCat;
+            catPosX--;
+            catScore += 200;
+            //System.out.println(catScore);
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY][catPosX+1] = 3;
+            repaint();
+        } else if (maze[catPosY][catPosX-1]== 2) {
+            catPic = leftCat;
+            catScore += 400;
             catPosX--;
             maze[catPosY][catPosX] = 5;
             maze[catPosY][catPosX+1] = 3;
             repaint();
         }
+        else if (maze[catPosY][catPosX-1]== 3) {
+            catPic = leftCat;
+            catPosX--;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY][catPosX+1] = 3;
+            repaint();
+        } else if (maze[catPosY][catPosX-1]== 6) {
+            catPic = leftCat;
+            catPosX--;
+            catScore += 2000;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY][catPosX+1] = 3;
+            repaint();
+        }
+        System.out.println(catScore);
     }
     public void right(){
-        if (maze[catPosY][catPosX+1]==1||maze[catPosY][catPosX+1]== 2 ||maze[catPosY][catPosX+1]== 3){
+        if (maze[catPosY][catPosX+1]==1){
+            catPic = rightCat;
+            catScore +=200;
+            //System.out.println(catScore);
             catPosX++;
             maze[catPosY][catPosX] = 5;
             maze[catPosY][catPosX-1] = 3;
             repaint();
+        } else if (maze[catPosY][catPosX+1]== 2){
+            catPic = rightCat;
+            catPosX++;
+            catScore += 400;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY][catPosX-1] = 3;
+            repaint();
+        } else if (maze[catPosY][catPosX+1]== 3){
+            catPic = rightCat;
+            catPosX++;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY][catPosX-1] = 3;
+            repaint();
+        } else if (maze[catPosY][catPosX+1]== 6) {
+            catPic = rightCat;
+            catPosX++;
+            catScore += 2000;
+            maze[catPosY][catPosX] = 5;
+            maze[catPosY][catPosX-1] = 3;
+            repaint();
         }
+        System.out.println(catScore);
     }
     @Override
     public void keyPressed(KeyEvent e) {
@@ -207,6 +315,8 @@ public class TheGame extends JFrame implements ActionListener, KeyListener
         if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
             right();
         }
+    }
+    public void healthBar(){
     }
     @Override
     public void keyReleased(KeyEvent e) {
