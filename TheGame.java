@@ -22,11 +22,9 @@ import java.awt.event.*;
 import java.awt.event.ActionEvent;//actionlistener
 import javax.swing.ImageIcon;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
+//import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.awt.BasicStroke;
-import java.io.InputStreamReader;
 
 public class TheGame extends JFrame implements ActionListener, KeyListener {
     int columns = 28;//this is setting the number of cell columns in the game panel to 21.
@@ -49,7 +47,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                     {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
                     {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 0, 4, 4, 0, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-                    {3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3},
+                    {3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 0, 4, 7, 7, 7, 7, 4, 0, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3},
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0},
                     {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
                     {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
@@ -74,22 +72,27 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     private static int emptyRoad = 3;//this is a road without a dot
     private static int emptySpace = 4;//this is a road that the cat doesn't go in/ it's a road out of bounds.
     final static int yOffset = 60;//added this because if I don't, there's no distance between the window bar and the frame and the top part of the frame isn't seen.
-    int gameTitleScreen = 0;
+    int gameTitleScreen = 1;
     int gameRunning = 1;//this is if the game starts playing, the game state will turn to 1 and the game will start.
     int gameEnding = 2;//the game state will change to 2 if the game ends
     int gameState = gameTitleScreen; // this states the game state to 0 which is the title screen
     String leftCat = "catLeft.png"; //this is a png of the cat facing left
     String rightCat = "catRight.png"; //this is a png of the cat facing right
     String downCat = "catDown.png"; //this is a png of the cat facing down
-    String upCat = "catUp.png"; //
+    String upCat = "catUp.png"; //png of cat facing up
+    String upDog = "dog up.png";//png of dog facing up
+    String downDog = "dog down.png";//png of dog facing down
+    String rightDog = "dog right.png";//png of dog facing right
+    String leftDog = "dog left.png";//png of dog facing left
     int diameter = 5;//diameter of the black dot in the middle
     int fishDiameter = 18;//diameter of the 'power up' pellets/fish
     int catPosX = 14;//the x coordinate of the cat
     int catPosY = 23;//the y coordinate of the cat
-    String catPic = leftCat;
-    ImageIcon catIcon = new ImageIcon(catPic);
+    String catPic = leftCat;//setting the initial cat position to left
+    String dogPic = leftDog;//setting the initial dog position to left
+    /*ImageIcon catIcon = new ImageIcon(catPic);
     Image catImage = catIcon.getImage();
-    Image modifiedCatImage = catImage.getScaledInstance(cellSize * 2, cellSize * 2, Image.SCALE_SMOOTH);//resizing the image
+    Image modifiedCatImage = catImage.getScaledInstance(cellSize * 2, cellSize * 2, Image.SCALE_SMOOTH);//resizing the image */
     double catVelX = 0;//velocity of the cat x axis
     double catVelY = 0;//velocity of the cat y axis
     int catScore;
@@ -102,12 +105,15 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     private final int titleScreen = 0;
     private final int gameIsPlaying = 1;
     private final int endingScreen = 2;
-
     Timer timer; //A timer variable that handles how often the cat should move (automatically)
     private int direction; //The current direction of the cat
     private int oldDirection;
     int catX;
     int catY;
+    int dogX;
+    int dogY;
+    int dogPosX = 14;
+    int dogPosY = 14;
     boolean isGameRunning = true;
 
     /**
@@ -143,11 +149,35 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         //these are the values of the array that makes up the maze. 0's are walls, 1's are roads with dots,
         //2's are pellets, 3's are empty roads 4's are empty spaces that the cat can't go in. (The centre, where all the 4's are, is where the dogs will appear. The cat can't go there.)
         Graphics2D g2 = (Graphics2D) g;
+        //creating the font for my game, this relates to my aesthetics relevant implications. If the score-keep was in new times roman, it wouldn't fit the theme of the game.
+        try {
+            Font minecraft = Font.createFont(Font.TRUETYPE_FONT, new File("Minecraft copy.ttf")).deriveFont(24f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(minecraft);
+            g2.setColor(Color.PINK);
+            g2.setFont(minecraft);
+            g2.drawString(Integer.toString(catScore), 25 * cellSize, 2 * cellSize + pointOffset);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
         switch (gameState) {
             case 0://if the game state is 0, the title screen will display
-                super.paint(g);
                 //drawing the title screen
+                super.paint(g);
+                //the bg
+                g2.setColor(new Color (255,255,216));
+                g2.fillRect(0,0,this.getWidth(),this.getHeight());
+                //writing the title name
                 g2.setFont(g2.getFont().deriveFont(Font.BOLD,96F));
+                String text = "Catman";
+                int x = this.getWidth() / 2 - g2.getFontMetrics().stringWidth(text) / 2;
+                int y = cellSize * 8;
+                //text shadow
+                g2.setColor(new Color(255, 255, 255));
+                g2.drawString(text,x+5,y+5);
+                //main text
+                g2.setColor(new Color(255,226,241));
+                g2.drawString(text, x, y);
                 break;
             case 1://if the game state is 1 then the game will play
                 //printing the cat to move directions
@@ -220,27 +250,27 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                                 g2.setColor(new Color(255, 32, 25));
                                 g2.fillOval(i * cellSize + (cellSize - fishDiameter) / 2, j * cellSize + (cellSize - fishDiameter) / 2 + yOffset, fishDiameter, fishDiameter);//creates a big red dot as another power up pellet
                                 break;
-
+                            case 7://this is where the dogs will be spawned.
+                                g2.setColor(new Color(255, 255, 255));//setting color to white
+                                g2.fillRect(i * cellSize, j * cellSize + yOffset, cellSize, cellSize);//filling the cell in the colour white
+                                //printing the dogs
+                                ImageIcon dogIcon = new ImageIcon(dogPic);
+                                Image dogImage = dogIcon.getImage();
+                                Image modifiedDogImage = dogImage.getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH);//resizing the png to fit the roads.
+                                catIcon = new ImageIcon(modifiedDogImage);
+                                dogX = dogPosX * cellSize + (cellSize - modifiedDogImage.getWidth(this)) / 2;
+                                dogY = dogPosY * cellSize + (cellSize - modifiedDogImage.getHeight(this)) / 2 + yOffset;
+                                catX = catPosX * cellSize + (cellSize - modifiedDogImage.getWidth(this)) / 2;//getting the width of the cat png
+                                catY = catPosY * cellSize + (cellSize - modifiedDogImage.getHeight(this)) / 2 + yOffset;//getting the height of the cat png
+                                catIcon.paintIcon(this, g, dogX, dogY - 2);//printing the cat in the center of cell 5.
+                                break;
                         }
                     }
-                    //creating the font for my game, this relates to my aesthetics relevant implications. If the score-keep was in new times roman, it wouldn't fit the theme of the game.
-                    try {
-                        //InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("Minecraft-copy.ttf");
-                        Font minecraft = Font.createFont(Font.TRUETYPE_FONT, new File("Minecraft copy.ttf")).deriveFont(24f);
-                        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-                        ge.registerFont(minecraft);
-                        g2.setColor(Color.PINK);
-                        g2.setFont(minecraft);
-                    } catch (FontFormatException | IOException e) {
-                        e.printStackTrace();
-                    }
-                    g2.drawString(Integer.toString(catScore), 25 * cellSize, 2 * cellSize + pointOffset);
                 }
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + gameState);
         }
-
     }
 
     /*public void renderOffScreen(Graphics2D g2){
