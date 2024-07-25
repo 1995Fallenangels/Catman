@@ -1,0 +1,123 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Dogs {
+    String upDog = "dog up.png";//png of dog facing up
+    String downDog = "dog down.png";//png of dog facing down
+    String rightDog = "dog right.png";//png of dog facing right
+    String leftDog = "dog left.png";//png of dog facing left
+    private int dogX;
+    private int dogY;
+    private int dogPosX = 14;
+    private int dogPosY = 14;
+    private int direction = 0;
+    String dogPic = leftDog;//setting the initial dog position to left
+    private TheGame game;
+    private Image dogImage;
+    private Timer moveTimer;
+
+    public Dogs(int startY, int startX, int velocity, TheGame game) {
+        this.dogY = startY;
+        this.dogX = startX;
+        this.dogPosY = startY;
+        this.dogPosX = startX;
+        this.direction = velocity;
+        this.game = game;
+        dogImage = new ImageIcon(dogPic).getImage();
+        moveTimer = new Timer((int) (1000 / velocity), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                move();
+            }
+        });
+        moveTimer.start();
+    }
+
+    public void setDogPosX(int dogX) {
+        this.dogPosX = dogX;
+    }
+
+    /*public void setDogPosY(int dogY) {
+    //    this.dogPosY = dogY;
+    }*/
+
+    public int getDogPosX() {
+        return dogPosX;
+    }
+
+    public int getDogPosY() {
+        return dogPosY;
+    }
+
+    public String getDogPic() {
+        return dogPic;
+    }
+
+    public void setDogPic(String dogPic) {
+        this.dogPic = dogPic;
+    }
+
+    public void setDogX(int dogX) {
+        this.dogX = dogX;
+    }
+
+    public void setDogY(int dogY) {
+        this.dogY = dogY;
+    }
+
+    public void move() {
+        switch (direction) {
+            case 0: // MOVE LEFT
+                if (canMove(dogPosY - 1, dogPosX)) {
+                    dogPosY--;
+                    dogImage = new ImageIcon(leftDog).getImage();
+                } else changeDirection();
+                break;
+            case 1: // MOVE RIGHT
+                if (canMove(dogPosY + 1, dogPosX)) {
+                    dogPosY++;
+                    dogImage = new ImageIcon(rightDog).getImage();
+                } else changeDirection();
+                break;
+            case 2: // MOVE UP
+                if (canMove(dogPosY, dogPosX - 1)) {
+                    dogPosX--;
+                    dogImage = new ImageIcon(upDog).getImage();
+                } else changeDirection();
+                break;
+            case 3: // MOVE DOWN
+                if (canMove(dogPosY, dogPosX + 1)) {
+                    dogPosX++;
+                    dogImage = new ImageIcon(downDog).getImage();
+                } else changeDirection();
+                break;
+        }
+    }
+
+    private boolean canMove(int y, int x) {
+        int[][] maze = TheGame.maze;
+        int mazeRows = maze.length;
+        int mazeColumns = maze[0].length;
+
+        if (x >= 0 && x < mazeColumns && y >= 0 && y < mazeRows) {
+            System.out.println(dogPosY + "," + dogPosX + ";" + TheGame.maze[x][y]);
+            System.out.println("moving to "+y+", "+x);
+            return maze[x][y] == 1 || maze[x][y] == 2 || maze[x][y] == 3 || maze[x][y] == 4|| maze[x][y] == 5;
+        } else {
+            System.out.println("Invalid move");
+            return false;
+        }
+    }
+    private void changeDirection() {
+        int[] possibleDirections = {0, 1, 2, 3};
+        this.direction = possibleDirections[(int) (Math.random() * possibleDirections.length)];
+        System.out.println("test");
+    }
+    public void paint(Graphics g) {
+        int cellSize = 23;
+        int yOffset = 60;
+        g.drawImage(dogImage, dogPosY * cellSize, dogPosX * cellSize + yOffset, cellSize, cellSize, null);
+    }
+}
