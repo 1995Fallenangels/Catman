@@ -18,7 +18,7 @@ public class Dogs {
     private Image dogImage;
     private Timer moveTimer;
 
-    public Dogs(int startY, int startX, int velocity, TheGame game) {
+    public Dogs(int startX, int startY, int velocity, TheGame game) {
         this.dogY = startY;
         this.dogX = startX;
         this.dogPosY = startY;
@@ -35,9 +35,9 @@ public class Dogs {
         moveTimer.start();
     }
 
-    public void setDogPosX(int dogX) {
-        this.dogPosX = dogX;
-    }
+    //public void setDogPosX(int dogX) {
+    //    this.dogPosX = dogX;
+    //}
 
     /*public void setDogPosY(int dogY) {
     //    this.dogPosY = dogY;
@@ -51,7 +51,7 @@ public class Dogs {
         return dogPosY;
     }
 
-    public String getDogPic() {
+    /*public String getDogPic() {
         return dogPic;
     }
 
@@ -65,7 +65,7 @@ public class Dogs {
 
     public void setDogY(int dogY) {
         this.dogY = dogY;
-    }
+    }*/
 
     public void move() {
         switch (direction) {
@@ -73,7 +73,8 @@ public class Dogs {
                 if (canMove(dogPosY - 1, dogPosX)) {
                     dogPosY--;
                     dogImage = new ImageIcon(leftDog).getImage();
-                } else changeDirection();
+                } /*else if (dogPosX == */
+                else changeDirection();
                 break;
             case 1: // MOVE RIGHT
                 if (canMove(dogPosY + 1, dogPosX)) {

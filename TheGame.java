@@ -51,7 +51,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0},
                     {3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3},
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-                    {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
+                    {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 4, 4, 4, 4, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
                     {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
                     {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0},
@@ -83,6 +83,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     String downCat = "catDown.png"; //this is a png of the cat facing down
     String upCat = "catUp.png"; //png of cat facing up
     String heartsPic = "hearts.png";
+    String newHeartsPic = "newHearts.png";
     private Image heartImage;
     int diameter = 5;//diameter of the black dot in the middle
     int fishDiameter = 18;//diameter of the 'power up' pellets/fish
@@ -105,7 +106,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     boolean isGameRunning = true;
     boolean paintDogs = true;
     int catLives = 3;
-    Dogs[] dogs = {new Dogs(12,14,2, this), new Dogs(13,14,1, this), new Dogs(14,14,1, this), new Dogs(15,14,1, this)};
+    Dogs[] dogs = {new Dogs(5, 6, 2, this), new Dogs(20, 6, 1, this), new Dogs(20, 21, 1, this), new Dogs(5, 21, 1, this), new Dogs(29, 12, 1, this)};
 
     /**
      * Constructor for objects of class extension
@@ -121,18 +122,31 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         this.setVisible(true);//makes it visible
         this.addKeyListener(this);
         repaint();//this prints out the maze.
+        gameStart();
+    }
 
-
+    public void gameStart() {
         while (isGameRunning) {
             try {
                 Thread.sleep(1000 / catVelocity);
                 repaint();
+                System.out.println("hi");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
-
     }
+
+    public void gameRestart() {
+        isGameRunning = true;
+        maze[catPosX][catPosY] = 3;
+        maze[14][23] = 5;
+        catPosX = 14;
+        catPosY = 23;
+        System.out.println("cat respawned");
+        gameStart();
+    }
+
 
     @Override
     public void paint(Graphics g) {
@@ -145,15 +159,19 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
             ge.registerFont(minecraft);
             g2.setFont(minecraft);
             g2.setColor(Color.WHITE);
-            g2.fillRect(25*cellSize, 1*cellSize + pointOffset, 4*cellSize, 1*cellSize);
+            g2.fillRect(25*cellSize, cellSize + pointOffset, 4*cellSize, cellSize);
             g2.setColor(Color.PINK);
             g2.drawString(Integer.toString(catScore), 25 * cellSize, 2 * cellSize + pointOffset);
+            for (int h = 0; h < catLives; h++) {
+                ImageIcon heartIcon = new ImageIcon(newHeartsPic);
+                Image heartImage = heartIcon.getImage();
+                Image modifiedHeartImage = heartImage.getScaledInstance((cellSize * 3), (cellSize * 3), Image.SCALE_SMOOTH);//resizing the png to fit the roads.
+                heartIcon = new ImageIcon(modifiedHeartImage);
+                heartIcon.paintIcon(this, g,  h*(3*cellSize), 10 );
+                //heartIcon.paintIcon(this, g,65, 10 );
+                //heartIcon.paintIcon(this, g,130, 10 );
 
-            ImageIcon heartIcon = new ImageIcon(heartsPic);
-            Image heartImage = heartIcon.getImage();
-            Image modifiedHeartImage = heartImage.getScaledInstance((cellSize * 2)-10, (cellSize * 2)-10, Image.SCALE_SMOOTH);//resizing the png to fit the roads.
-            heartIcon = new ImageIcon(modifiedHeartImage);
-            heartIcon.paintIcon(this, g, cellSize, cellSize+ 3);
+            }
 
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
@@ -240,6 +258,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                                 catX = catPosX * cellSize + (cellSize - modifiedCatImage.getWidth(this)) / 2;//getting the width of the cat png
                                 catY = catPosY * cellSize + (cellSize - modifiedCatImage.getHeight(this)) / 2 + yOffset;//getting the height of the cat png
                                 catIcon.paintIcon(this, g, catX, catY - 2);//printing the cat in the center of cell 5.
+                                System.out.println(catPosX + " " + catPosY);
                                 break;
                             case 6://sets the 6 into a power up pellet but if I have time, I'll change it into another food png.
                                 g2.setColor(new Color(255, 238, 238));
@@ -261,13 +280,15 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
             for (int k=0; k<dogs.length; k++){
                 dogs[k].paint(g2);
                 if(dogs[k].getDogPosX() == catPosY  && dogs[k].getDogPosY() == catPosX) {
+                    catLives--;
+                    gameRestart();
                     //If the locations of the dogs are the same as the cat it means the cat got caught!
                     System.out.println("CAT CAUGHT   " + dogs[k].getDogPosX() + "  " + dogs[k].getDogPosY());
                     //dog X and dog Y accidentally switched while coding.
 
-                    isGameRunning = false; //Stop running the game, probably show a lose screen here.
-
-
+                    if (catLives <= 0) {
+                        isGameRunning = false; //Stop running the game, probably show a lose screen here.
+                    }
 
                 }
             }
