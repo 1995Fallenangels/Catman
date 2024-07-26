@@ -1,21 +1,3 @@
-/**
- * Write a description of class TheGame here.
- * <p>
- * This is the code for the game 'Catman' I'm creating for my computer science assignment. Catman is inspired by the game Pacman.
- * In this game, a cat is being chased by dogs. When the cat gets caught by a dog, the cat loses 3 lives. The cat has 9 lives in total.
- * There will be fish the cat can eat.
- * There will need to be 4 main components that make up this game which is:
- * 1) a maze component. This draws the maze the cat and dogs walk through
- * 2) a component that moves the characters
- * 3) a scorekeeping component. This will show the score of the user
- * 4) a healthbar. This will show how many lives the kitten has left. The cat will have nine lives represented as hearts (because cats have 9 lives).
- * When the cat runs into a dog, the cat will lose 3 lives.
- *
- * @author gabriella
- * @version 01/06
- */
-
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +17,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     int mazeColumns = 28;//this sets the maze columns to 28
     int cellSize = 23;// this sets the size of one cell to 23 pixels.
     public static int[][] maze =
-            {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
                     {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0},
                     {0, 2, 0, 4, 4, 0, 1, 0, 4, 4, 4, 0, 1, 0, 0, 1, 0, 4, 4, 4, 0, 1, 0, 4, 4, 0, 2, 0},
@@ -47,11 +29,11 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
                     {4, 4, 4, 4, 4, 0, 1, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 1, 0, 4, 4, 4, 4, 4},
                     {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
-                    {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 4, 4, 4, 4, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
+                    {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 0, 4, 4, 0, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-                    {3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3},
+                    {3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 0, 4, 7, 7, 7, 7, 4, 0, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3},
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-                    {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 4, 4, 4, 4, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
+                    {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
                     {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
                     {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0},
@@ -65,7 +47,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
                     {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},};
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},};
     // this makes an array which the values of the maze and can hold a value of being a wall or a road that the cat and dogs can walk through.
     //the road has little white dots/pellets the cat can eat. When the cat eats the pellet the road become empty.
     private static int river = 0;//a river acts as a wall the cat can't walk through.
@@ -82,17 +64,23 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     String rightCat = "catRight.png"; //this is a png of the cat facing right
     String downCat = "catDown.png"; //this is a png of the cat facing down
     String upCat = "catUp.png"; //png of cat facing up
-    String heartsPic = "hearts.png";
-    String newHeartsPic = "newHearts.png";
-    private Image heartImage;
     int diameter = 5;//diameter of the black dot in the middle
     int fishDiameter = 18;//diameter of the 'power up' pellets/fish
     int catPosX = 14;//the x coordinate of the cat
     int catPosY = 23;//the y coordinate of the cat
+    int catStartX = catPosX;
+    int catStartY = catPosY;
     String catPic = leftCat;//setting the initial cat position to left
+    /*ImageIcon catIcon = new ImageIcon(catPic);
+    Image catImage = catIcon.getImage();
+    Image modifiedCatImage = catImage.getScaledInstance(cellSize * 2, cellSize * 2, Image.SCALE_SMOOTH);//resizing the image */
+    double catVelX = 0;//velocity of the cat x axis
+    double catVelY = 0;//velocity of the cat y axis
     int catScore;
     int pointOffset = 10;
-    int catVelocity = 2; //Initialize the velocity variable of the cat private
+    private Image doubleBufferImage = null;
+    private Graphics doubleBufferGraphics = null;
+    int catVelocity = 4; //Initialize the velocity variable of the cat private
     int catPowerVelocity = 6;
     int curretlyDisplaying;
     private final int titleScreen = 0;
@@ -103,10 +91,11 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     private int oldDirection;
     int catX;
     int catY;
+    int lives = 3;
     boolean isGameRunning = true;
+    boolean isLost = false;
     boolean paintDogs = true;
-    int catLives = 3;
-    Dogs[] dogs = {new Dogs(5, 6, 2, this), new Dogs(20, 6, 1, this), new Dogs(20, 21, 1, this), new Dogs(5, 21, 1, this), new Dogs(29, 12, 1, this)};
+    Dogs[] dogs = {new Dogs(5,5,3, this), new Dogs(22,6,1, this), new Dogs(1,10,1, this), new Dogs(20,20,1, this)};
 
     /**
      * Constructor for objects of class extension
@@ -122,60 +111,76 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         this.setVisible(true);//makes it visible
         this.addKeyListener(this);
         repaint();//this prints out the maze.
-        gameStart();
-    }
+        //timer = new Timer( (int)(1000/catVelocity), this); //Make a timer that executes every 1000 Millisecond/cat velocity
+        //If the cat velocity is 2, that means it moves 2 times per second (500 ms)
+        //timer.start(); //Start the timer after creating it.
 
-    public void gameStart() {
+
         while (isGameRunning) {
             try {
                 Thread.sleep(1000 / catVelocity);
                 repaint();
-                System.out.println("hi");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+
     }
+    private void drawTitleScreen(Graphics2D g2) {
 
-    public void gameRestart() {
-        isGameRunning = true;
-        maze[catPosX][catPosY] = 3;
-        maze[14][23] = 5;
-        catPosX = 14;
-        catPosY = 23;
-        System.out.println("cat respawned");
-        gameStart();
-    }
-
-
-    @Override
-    public void paint(Graphics g) {
-        if(!isGameRunning) return; //If the boolean is false stop running the game (Probably means you lost)
-        Graphics2D g2 = (Graphics2D) g;
-        //creating the font for my game, this relates to my aesthetics relevant implications. If the score-keep was in new times roman, it wouldn't fit the theme of the game.
         try {
             Font minecraft = Font.createFont(Font.TRUETYPE_FONT, new File("Minecraft copy.ttf")).deriveFont(24f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(minecraft);
-            g2.setFont(minecraft);
-            g2.setColor(Color.WHITE);
-            g2.fillRect(25*cellSize, cellSize + pointOffset, 4*cellSize, cellSize);
             g2.setColor(Color.PINK);
+            g2.setFont(minecraft);
             g2.drawString(Integer.toString(catScore), 25 * cellSize, 2 * cellSize + pointOffset);
-            for (int h = 0; h < catLives; h++) {
-                ImageIcon heartIcon = new ImageIcon(newHeartsPic);
-                Image heartImage = heartIcon.getImage();
-                Image modifiedHeartImage = heartImage.getScaledInstance((cellSize * 3), (cellSize * 3), Image.SCALE_SMOOTH);//resizing the png to fit the roads.
-                heartIcon = new ImageIcon(modifiedHeartImage);
-                heartIcon.paintIcon(this, g,  h*(3*cellSize), 10 );
-                //heartIcon.paintIcon(this, g,65, 10 );
-                //heartIcon.paintIcon(this, g,130, 10 );
-
-            }
-
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
+        // Set background color
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+
+        // Set title text color and font
+        g2.setColor(Color.WHITE);
+
+        // Draw the title text
+        Font oldFont = g2.getFont();
+        Font titleFont = oldFont.deriveFont(72f);
+        g2.setFont(titleFont);
+        int x = (getWidth() - 300) / 2;
+        int y = (getHeight())/ 2;
+        g2.drawString("Cat man", x, y);
+        g2.setFont(oldFont);
+
+        // Set instruction text color and font
+        x += 10;
+        y +=  60;
+        g2.drawString("Press Enter to Start", x, y);
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+
+
+
+        if(!isGameRunning) {//If the boolean is false stop running the game (Probably means you lost)
+            if(!isLost) {
+                drawTitleScreen(g2);
+            }
+            return;
+        }
+
+
+        //these are the values of the array that makes up the maze. 0's are walls, 1's are roads with dots,
+        //2's are pellets, 3's are empty roads 4's are empty spaces that the cat can't go in. (The centre, where all the 4's are, is where the dogs will appear. The cat can't go there.)
+
+        //creating the font for my game, this relates to my aesthetics relevant implications. If the score-keep was in new times roman, it wouldn't fit the theme of the game.
+
+
+
         switch (gameState) {
             case 0://if the game state is 0, the title screen will display
                 //drawing the title screen
@@ -195,7 +200,6 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                 g2.setColor(new Color(255,226,241));
                 g2.drawString(text, x, y);
                 break;
-
             case 1://if the game state is 1 then the game will play
                 //printing the cat to move directions
                 switch (direction) {
@@ -206,9 +210,11 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                         left();
                         break;
                     case KeyEvent.VK_DOWN:
+//                        if (maze[catPosY + 1][catPosX] == 0 || maze[catPosY + 1][catPosX] == 4) break;
                         down();
                         break;
                     case KeyEvent.VK_UP:
+//                        if (maze[catPosY - 1][catPosX] == 0 || maze[catPosY - 1][catPosX] == 4) break;
                         up();
                         break;
                 }
@@ -258,7 +264,6 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                                 catX = catPosX * cellSize + (cellSize - modifiedCatImage.getWidth(this)) / 2;//getting the width of the cat png
                                 catY = catPosY * cellSize + (cellSize - modifiedCatImage.getHeight(this)) / 2 + yOffset;//getting the height of the cat png
                                 catIcon.paintIcon(this, g, catX, catY - 2);//printing the cat in the center of cell 5.
-                                System.out.println(catPosX + " " + catPosY);
                                 break;
                             case 6://sets the 6 into a power up pellet but if I have time, I'll change it into another food png.
                                 g2.setColor(new Color(255, 238, 238));
@@ -266,6 +271,36 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                                 g2.setColor(new Color(255, 32, 25));
                                 g2.fillOval(i * cellSize + (cellSize - fishDiameter) / 2, j * cellSize + (cellSize - fishDiameter) / 2 + yOffset, fishDiameter, fishDiameter);//creates a big red dot as another power up pellet
                                 break;
+                            case 7://this is where the dogs will be spawned.
+//                                g2.setColor(new Color(255, 255, 255));//setting color to white
+//                                g2.fillRect(i * cellSize, j * cellSize + yOffset, cellSize, cellSize);//filling the cell in the colour white
+//                                //printing the dogs
+//                                for (int k=0; k<dogs.length; k++){
+//                                    Dogs dog = dogs[k];
+//                                    ImageIcon dogIcon = new ImageIcon(dog.getDogPic());
+//                                    Image dogImage = dogIcon.getImage();
+//                                    Image modifiedDogImage = dogImage.getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH);//resizing the png to fit the roads.
+//                                    dogIcon = new ImageIcon(modifiedDogImage);
+//                                    dog.setDogX(dog.getDogPosX() * cellSize + (cellSize - modifiedDogImage.getWidth(this)) / 2);
+//                                    dog.setDogY(dog.getDogPosY() * cellSize + (cellSize - modifiedDogImage.getHeight(this)) / 2 + yOffset);
+//                                    dogIcon.paintIcon(this, g, dog.getDogPosX(), dog.getDogPosY() - 2);
+//                                }
+                                break;
+                            /*case 8:
+                                g2.setColor(new Color(255, 255, 255));//setting color to white
+                                g2.fillRect(i * cellSize, j * cellSize + yOffset, cellSize, cellSize);//filling the cell in the colour white
+                                //printing the dogs
+                                ImageIcon dogIcon = new ImageIcon(dogPic);
+                                Image dogImage = dogIcon.getImage();
+                                Image modifiedDogImage = dogImage.getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH);//resizing the png to fit the roads.
+                                catIcon = new ImageIcon(modifiedDogImage);
+                                dogX = dogPosX * cellSize + (cellSize - modifiedDogImage.getWidth(this)) / 2;
+                                dogY = dogPosY * cellSize + (cellSize - modifiedDogImage.getHeight(this)) / 2 + yOffset;
+                                catX = catPosX * cellSize + (cellSize - modifiedDogImage.getWidth(this)) / 2;//getting the width of the cat png
+                                catY = catPosY * cellSize + (cellSize - modifiedDogImage.getHeight(this)) / 2 + yOffset;//getting the height of the cat png
+                                catIcon.paintIcon(this, g, dogX, dogY - 2);//printing the cat in the center of cell 5.
+                                //System.out.println("dog"+ dogX + " " + dogY);
+                                break;*/
                         }
                     }
 
@@ -280,26 +315,47 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
             for (int k=0; k<dogs.length; k++){
                 dogs[k].paint(g2);
                 if(dogs[k].getDogPosX() == catPosY  && dogs[k].getDogPosY() == catPosX) {
-                    catLives--;
-                    gameRestart();
                     //If the locations of the dogs are the same as the cat it means the cat got caught!
+
+
                     System.out.println("CAT CAUGHT   " + dogs[k].getDogPosX() + "  " + dogs[k].getDogPosY());
                     //dog X and dog Y accidentally switched while coding.
+                    catPosX = catStartX;
+                    catPosY = catStartY;
+                    left();
+                        lives--;
+                        if(lives <=0) {
+                            isLost = true;
 
-                    if (catLives <= 0) {
-                        isGameRunning = false; //Stop running the game, probably show a lose screen here.
-                    }
+                            isGameRunning = false; //Stop running the game, probably show a lose screen here.
+                        }
+
 
                 }
             }
+//	        paintDogs = false;
         }
 
 
 
     }
 
+    /*public void renderOffScreen(Graphics2D g2){
+
+    }*/
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
     public void up() {
-        if (maze[catPosY - 1][catPosX] == 1) {
+        if (catPosY - 1 < 0) {
+            // Move cat to the bottom row
+            maze[mazeRows - 1][catPosX] = 5;
+            maze[catPosY][catPosX] = 3;
+            catPosY = mazeRows - 1;
+            catPic = upCat;
+        }else if (maze[catPosY - 1][catPosX] == 1) {
             catPic = upCat;
             catScore += 200;
             catPosY--;
@@ -327,7 +383,14 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     }
 
     public void down() {
-        if(maze[catPosY + 1][catPosX] == 1) {
+        if(catPosY+1 >  mazeRows-1) {
+            maze[1][catPosX] = 5;
+            maze[catPosY][catPosX] = 3;
+            catPosY = 1;
+            catPic = downCat;
+
+        }
+        else if (maze[catPosY + 1][catPosX] == 1) {
             catPic = downCat;
             catScore += 200;
             catPosY++;
@@ -355,13 +418,14 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     }
 
     public void left() {
-        if(catPosX-1 < 0) {//this is for the cat to teleport from one end of the middle lane in the maze to the opposite end of the maze.
-            maze[catPosY][mazeColumns-1] = 5;//this makes the cat teleport to the other side of the maze
+        if(catPosX-1 < 0) {
+            maze[catPosY][mazeColumns-1] = 5;
             maze[catPosY][catPosX] = 3;
             catPosX = mazeColumns-1;
+            catPic = leftCat;
 
         }
-        else if (maze[catPosY][catPosX - 1] == 1) { // if the cell the cat is going to is a
+        else if (maze[catPosY][catPosX - 1] == 1) {
             catPic = leftCat;
             catPosX--;
             catScore += 200;
@@ -394,6 +458,8 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
             maze[catPosY][1] = 5;
             maze[catPosY][catPosX] = 3;
             catPosX = 1;
+            catPic = rightCat;
+
         }
         else if (maze[catPosY][catPosX + 1] == 1) {
             catPic = rightCat;
@@ -425,9 +491,14 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
+        if(key == KeyEvent.VK_ENTER) {
+            isGameRunning = true;
+        }
+
         if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
-            if (!(maze[catPosY - 1][catPosX] == 0) && !(maze[catPosY - 1][catPosX] == 4)) {
+            if (!(maze[catPosY - 1][catPosX] == 0 || maze[catPosY - 1][catPosX] == 4)) {
                 direction = KeyEvent.VK_UP;
+                System.out.println(maze[catPosY - 1][catPosX]);
 
             }
         }
@@ -439,20 +510,22 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
             if (!(maze[catPosY][catPosX - 1] == 0) && !(maze[catPosY][catPosX - 1] == 4)) {
                 direction = KeyEvent.VK_LEFT;
+                oldDirection = direction;
             }
         }
         if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
             if (!(maze[catPosY][catPosX + 1] == 0) && !(maze[catPosY][catPosX + 1] == 4)) {
                 direction = KeyEvent.VK_RIGHT;
+                oldDirection = direction;
             }
         }
     }
-    @Override
-    public void actionPerformed(ActionEvent e) {
-    }
+
     @Override
     public void keyReleased(KeyEvent e) {
+
     }
+
     @Override
     public void keyTyped(KeyEvent e) {
     }

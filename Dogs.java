@@ -102,7 +102,7 @@ public class Dogs {
         int mazeRows = maze.length;
         int mazeColumns = maze[0].length;
 
-        if (x >= 0 && x < mazeColumns && y >= 0 && y < mazeRows) {
+        if (x >= 0 && x <mazeRows   && y >= 0 && y <mazeColumns   ) {
             System.out.println(dogPosY + "," + dogPosX + ";" + TheGame.maze[x][y]);
             System.out.println("moving to "+y+", "+x);
             return maze[x][y] == 1 || maze[x][y] == 2 || maze[x][y] == 3 || maze[x][y] == 4|| maze[x][y] == 5;
