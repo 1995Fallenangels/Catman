@@ -141,9 +141,9 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         catIcon = new ImageIcon(modifiedCatImage);
         x= this.getWidth()/2 - catIcon.getIconWidth()/2;
         catIcon.paintIcon(this, g2, x, y - 245);//printing the cat in the center of cell 5.
+        y +=  60;
         // Set instruction text color and font
         //x += 10;
-        y +=  60;
         g2.drawString("Press Enter to Start", x, y);
     }
 
