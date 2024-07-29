@@ -1,15 +1,14 @@
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.event.ActionEvent;//actionlistener
-import javax.swing.ImageIcon;
-import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 
+public class TheGame extends JPanel implements KeyListener  {
 
-public class TheGame extends JFrame implements ActionListener, KeyListener {
     int columns = 28;//this is setting the number of cell columns in the game panel to 21.
     int rows = 50; //sets the cell rows in the game panel to 50.
     int mazeRows = 31;//this sets the maze rows to 31.
@@ -47,8 +46,8 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
                     {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},};
-    // this makes an array which the values of the maze and can hold a value of being a wall or a road that the cat and dogs can walk through.
-    //the road has little white dots/pellets the cat can eat. When the cat eats the pellet the road become empty.
+
+
     final static int yOffset = 60;//added this because if I don't, there's no distance between the window bar and the frame and the top part of the frame isn't seen.
     int gameState = 1; // this states the game state to 0 which is the title screen
     String leftCat = "catLeft.png"; //this is a png of the cat facing left
@@ -56,7 +55,6 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     String downCat = "catDown.png"; //this is a png of the cat facing down
     String upCat = "catUp.png"; //png of cat facing up
     String newHeartsPic = "newHearts.png";
-    private Image heartImage;
     int diameter = 5;//diameter of the black dot in the middle
     int fishDiameter = 18;//diameter of the 'power up' pellets/fish
     int catPosX = 14;//the x coordinate of the cat
@@ -66,8 +64,9 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
     String catPic = leftCat;//setting the initial cat position to left
     int pointOffset = 10;
     int catVelocity = 4; //Initialize the velocity variable of the cat private
-    int catPowerVelocity = 6;
-    private int direction; //The current direction of the cat
+    int catPowerVelocity = 8;
+    int powerUpDuration = 4;//Power up duration in seconds
+    private int direction = 0; //The current direction of the cat
     int catScore;
     int catX;
     int catY;
@@ -80,53 +79,70 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
             , new Dogs(20, 21, 1, this)
             , new Dogs(5, 21, 1, this)
             , new Dogs(29, 15, 3, this)};
+    private Timer timer; // Timer field
+    private Timer catTimer;
+    private Timer powerUpTimer;
 
-
-    /**
-     * Constructor for objects of class extension
-     */
     public TheGame() {
-        this.setTitle("Catman");
-        this.setPreferredSize(new Dimension((cellSize * columns), (cellSize * rows)));//sets the size of the window
-        this.getContentPane().setBackground(new Color(255, 255, 255));// I made the background colour baby pink. This correlates to my relevant implications of aesthetics. (30th of may I changed it to white)
-        this.setLayout(null);//this is meant to set the window to the middle of the computer screen.
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);//makes the window close when it needs to
-        this.pack();//this sizes the window to the preferred size
-        this.toFront();//makes the game the focused window.
-        this.setVisible(true);//makes it visible
         this.addKeyListener(this);
-        repaint();//this prints out the maze.
-        //timer = new Timer( (int)(1000/catVelocity), this); //Make a timer that executes every 1000 Millisecond/cat velocity
-        //If the cat velocity is 2, that means it moves 2 times per second (500 ms)
-        //timer.start(); //Start the timer after creating it.
+        setFocusable(true);
+        requestFocusInWindow(true);
 
-
-        while (true) {
-            try {
-
-                    Thread.sleep(1000 / catVelocity);
-                    repaint();
-
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        catTimer = new Timer(1000/catVelocity, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!isGameRunning) return;
+                switch (direction) {
+                    case KeyEvent.VK_RIGHT:
+                        right();
+                        break;
+                    case KeyEvent.VK_LEFT:
+                        left();
+                        break;
+                    case KeyEvent.VK_DOWN:
+//                    if (maze[catPosY + 1][catPosX] == 0 || maze[catPosY + 1][catPosX] == 4) break;
+                        down();
+                        break;
+                    case KeyEvent.VK_UP:
+//                    if (maze[catPosY - 1][catPosX] == 0 || maze[catPosY - 1][catPosX] == 4) break;
+                        up();
+                        break;
+                }
             }
-        }
+        });
+        timer = new Timer(15, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+                repaint(); // Call repaint every 1 second
+            }
+        });
+        powerUpTimer = new Timer(1000 * powerUpDuration, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                catTimer.setDelay(1000/catVelocity);
+                powerUpTimer.stop();
+            }
+        });
+        timer.start(); // Start the timer
+        catTimer.start();
     }
+
+
     private void drawTitleScreen(Graphics2D g2) {
+        //setting the bg color
         g2.setColor(new Color (255,255,255));
         g2.fillRect(0,0,this.getWidth(),this.getHeight());
-
-        // Draw the title text
+        // draw the title text
         Font oldFont = g2.getFont();
         Font titleFont = oldFont.deriveFont(72f);
         g2.setFont(titleFont);
         String text = "Catman";
         int x = this.getWidth() / 2 - g2.getFontMetrics().stringWidth(text) / 2;
         int y = (getHeight()  / 2);
-        g2.setColor(new Color	(255,208,237));
-        g2.drawString(text,x+5,y+5);
-        // Set title text color and font
+        g2.setColor(new Color   (255,208,237));
+        g2.drawString(text,x,y);
+        // set title text color and font
         g2.setColor(new Color(255,236,242));
         g2.drawString(text, x, y);
         g2.setFont(oldFont);
@@ -147,8 +163,13 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         g2.drawString("Press Enter to Start", x, y);
     }
 
+
+
+
     @Override
-    public void paint(Graphics g) {
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
         Graphics2D g2 = (Graphics2D) g;
         try {
             Font minecraft = Font.createFont(Font.TRUETYPE_FONT, new File("Minecraft copy.ttf")).deriveFont(24f);
@@ -164,9 +185,12 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         }
 
 
-        if(!isGameRunning) {//If the boolean is false stop running the game (Probably means you lost)
+        if(!isGameRunning) {
             if(!isLost) {
                 drawTitleScreen(g2);
+            }
+            if(isLost) {
+
             }
             return;
         }
@@ -186,35 +210,17 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
 
         }
 
-        //these are the values of the array that makes up the maze. 0's are walls, 1's are roads with dots,
-        //2's are pellets, 3's are empty roads 4's are empty spaces that the cat can't go in. (The centre, where all the 4's are, is where the dogs will appear. The cat can't go there.)
-
-        //creating the font for my game, this relates to my aesthetics relevant implications. If the score-keep was in new times roman, it wouldn't fit the theme of the game.
 
 
 
         switch (gameState) {
             case 1://if the game state is 1 then the game will play
                 //printing the cat to move directions
-                switch (direction) {
-                    case KeyEvent.VK_RIGHT:
-                        right();
-                        break;
-                    case KeyEvent.VK_LEFT:
-                        left();
-                        break;
-                    case KeyEvent.VK_DOWN:
-//                        if (maze[catPosY + 1][catPosX] == 0 || maze[catPosY + 1][catPosX] == 4) break;
-                        down();
-                        break;
-                    case KeyEvent.VK_UP:
-//                        if (maze[catPosY - 1][catPosX] == 0 || maze[catPosY - 1][catPosX] == 4) break;
-                        up();
-                        break;
-                }
+
                 //now I need to print the array
                 for (int i = 0; i < mazeColumns; i++) {
                     for (int j = 0; j < mazeRows; j++) {
+
                         switch (maze[j][i]) {
                             case 0://sets all the 0's to a river that acts as a wall
                                 g2.setColor(new Color(62, 164, 240));//setting the colour to blue for water
@@ -246,6 +252,8 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                                 //empty space cat can't go ind
                                 break;
                             case 5:
+                                System.out.println("PAINTT " + catPosX + " " +catPosY);
+
                                 //this is where the cat will be spawned.
                                 //set the background to pink
                                 g2.setColor(new Color(255, 238, 238));
@@ -264,6 +272,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                                 g2.fillRect(i * cellSize, j * cellSize + yOffset, cellSize, cellSize);//creates the background pink
                                 g2.setColor(new Color(255, 32, 25));
                                 g2.fillOval(i * cellSize + (cellSize - fishDiameter) / 2, j * cellSize + (cellSize - fishDiameter) / 2 + yOffset, fishDiameter, fishDiameter);//creates a big red dot as another power up pellet
+
                                 break;
                         }
                     }
@@ -273,8 +282,6 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
             default:
                 throw new IllegalStateException("Unexpected value: " + gameState);
         }
-
-
         if(paintDogs) {
             for (int k=0; k<dogs.length; k++){
                 dogs[k].paint(g2);
@@ -288,30 +295,25 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
                     catPosX = catStartX;
                     catPosY = catStartY;
                     left();
-                        lives--;
-                        if(lives <=0) {
-                            isLost = true;
-
-                            isGameRunning = false; //Stop running the game, probably show a lose screen here.
-                        }
+                    lives--;
+                    if(lives <=0) {
+                        isLost = true;
+                        isGameRunning = false; //Stop running the game, probably show a lose screen here.
+                        paintDogs = false;
+                    }
 
 
                 }
             }
-//	        paintDogs = false;
         }
 
-
-
     }
 
-    /*public void renderOffScreen(Graphics2D g2){
 
-    }*/
-    @Override
-    public void actionPerformed(ActionEvent e) {
 
-    }
+
+
+
 
     public void up() {
         if (catPosY - 1 < 0) {
@@ -330,7 +332,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
             catPic = upCat;
             catScore += 400;
             catPosY--;
-            catVelocity = catPowerVelocity;
+            PowerUpCat();
             maze[catPosY][catPosX] = 5;
             maze[catPosY + 1][catPosX] = 3;
         } else if (maze[catPosY - 1][catPosX] == 3) {
@@ -364,7 +366,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         } else if (maze[catPosY + 1][catPosX] == 2) {
             catPic = downCat;
             catPosY++;
-            catVelocity = catPowerVelocity;
+            PowerUpCat();
             catScore += 400;
             maze[catPosY][catPosX] = 5;
             maze[catPosY - 1][catPosX] = 3;
@@ -400,7 +402,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         } else if (maze[catPosY][catPosX - 1] == 2) {
             catPic = leftCat;
             catScore += 400;
-            catVelocity = catPowerVelocity;
+            PowerUpCat();
             catPosX--;
             maze[catPosY][catPosX] = 5;
             maze[catPosY][catPosX + 1] = 3;
@@ -435,7 +437,7 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         } else if (maze[catPosY][catPosX + 1] == 2) {
             catPic = rightCat;
             catPosX++;
-            catVelocity = catPowerVelocity;
+            PowerUpCat();
             catScore += 400;
             maze[catPosY][catPosX] = 5;
             maze[catPosY][catPosX - 1] = 3;
@@ -453,10 +455,11 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         }
     }
 
+
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        if(key == KeyEvent.VK_ENTER) {
+        if(key == KeyEvent.VK_ENTER && !isLost) {
             isGameRunning = true;
         }
 
@@ -484,12 +487,26 @@ public class TheGame extends JFrame implements ActionListener, KeyListener {
         }
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
 
+    private void PowerUpCat() {
+        powerUpTimer.stop();
+
+        catTimer.setDelay(1000/20);
+        powerUpTimer.start();
     }
-
     @Override
     public void keyTyped(KeyEvent e) {
+        // TODO Auto-generated method stub
+
     }
+
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
 }
+ 
+ 

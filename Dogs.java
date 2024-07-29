@@ -18,13 +18,13 @@ public class Dogs {
     private Image dogImage;
     private Timer moveTimer;
 
-    public Dogs(int startX, int startY, int velocity, TheGame game) {
+    public Dogs(int startX, int startY, int velocity, TheGame theGame) {
         this.dogY = startY;
         this.dogX = startX;
         this.dogPosY = startY;
         this.dogPosX = startX;
         this.direction = velocity;
-        this.game = game;
+        this.game = theGame;
         dogImage = new ImageIcon(dogPic).getImage();
         moveTimer = new Timer((int) (1000 / velocity), new ActionListener() {
             @Override
@@ -35,13 +35,6 @@ public class Dogs {
         moveTimer.start();
     }
 
-    //public void setDogPosX(int dogX) {
-    //    this.dogPosX = dogX;
-    //}
-
-    /*public void setDogPosY(int dogY) {
-    //    this.dogPosY = dogY;
-    }*/
 
     public int getDogPosX() {
         return dogPosX;
@@ -50,22 +43,6 @@ public class Dogs {
     public int getDogPosY() {
         return dogPosY;
     }
-
-    /*public String getDogPic() {
-        return dogPic;
-    }
-
-    public void setDogPic(String dogPic) {
-        this.dogPic = dogPic;
-    }
-
-    public void setDogX(int dogX) {
-        this.dogX = dogX;
-    }
-
-    public void setDogY(int dogY) {
-        this.dogY = dogY;
-    }*/
 
     public void move() {
         switch (direction) {
@@ -103,8 +80,6 @@ public class Dogs {
         int mazeColumns = maze[0].length;
 
         if (x >= 0 && x <mazeRows   && y >= 0 && y <mazeColumns   ) {
-            System.out.println(dogPosY + "," + dogPosX + ";" + TheGame.maze[x][y]);
-            System.out.println("moving to "+y+", "+x);
             return maze[x][y] == 1 || maze[x][y] == 2 || maze[x][y] == 3 || maze[x][y] == 4|| maze[x][y] == 5;
         } else {
             System.out.println("Invalid move");
@@ -114,7 +89,6 @@ public class Dogs {
     private void changeDirection() {
         int[] possibleDirections = {0, 1, 2, 3};
         this.direction = possibleDirections[(int) (Math.random() * possibleDirections.length)];
-        System.out.println("test");
     }
     public void paint(Graphics g) {
         int cellSize = 23;
@@ -122,3 +96,4 @@ public class Dogs {
         g.drawImage(dogImage, dogPosY * cellSize, dogPosX * cellSize + yOffset, cellSize, cellSize, null);
     }
 }
+
