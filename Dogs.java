@@ -1,26 +1,33 @@
+/**
+ *  *
+ *  This is the dogs class. This is where I will sort out the dogs directions
+ *  creating a separate dogs class will make things less cluttered.
+ *  * @author gabriella bella rose Bitju
+ *  * @version 30/07
+ *  */
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Dogs {
-    String upDog = "dog up.png";//png of dog facing up
-    String downDog = "dog down.png";//png of dog facing down
-    String rightDog = "dog right.png";//png of dog facing right
-    String leftDog = "dog left.png";//png of dog facing left
-    private int dogX;
-    private int dogY;
-    private int dogPosX = 14;
-    private int dogPosY = 14;
-    private int direction = 0;
+    String upDog = "doggyUp.png";//png of dog facing up
+    String downDog = "doggyDown.png";//png of dog facing down
+    String rightDog = "doggyRight.png";//png of dog facing right
+    String leftDog = "doggyLeft.png";//png of dog facing left
+    private int dogX;//initialising the dogs x coordinates
+    private int dogY;//initialising the dogs x coordinates
+    private int dogPosX;//
+    private int dogPosY;
+    private int direction;
     String dogPic = leftDog;//setting the initial dog position to left
     private TheGame game;
     private Image dogImage;
     private Timer moveTimer;
 
     public Dogs(int startX, int startY, int velocity, TheGame theGame) {
-        this.dogY = startY;
-        this.dogX = startX;
+        //this.dogY = startY;
+        //this.dogX = startX;
         this.dogPosY = startY;
         this.dogPosX = startX;
         this.direction = velocity;

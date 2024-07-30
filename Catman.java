@@ -20,7 +20,6 @@ public class Catman extends JFrame {
         frame.setSize((cellSize * columns), (cellSize * rows));
         TheGame panel = new TheGame();
         frame.add(panel);
-
         // Set the frame to be visible
         frame.setVisible(true);
     }
