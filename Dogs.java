@@ -15,23 +15,17 @@ public class Dogs {
     String downDog = "doggyDown.png";//png of dog facing down
     String rightDog = "doggyRight.png";//png of dog facing right
     String leftDog = "doggyLeft.png";//png of dog facing left
-    private int dogX;//initialising the dogs x coordinates
-    private int dogY;//initialising the dogs x coordinates
     private int dogPosX;//
     private int dogPosY;
     private int direction;
     String dogPic = leftDog;//setting the initial dog position to left
-    private TheGame game;
     private Image dogImage;
     private Timer moveTimer;
 
-    public Dogs(int startX, int startY, int velocity, TheGame theGame) {
-        //this.dogY = startY;
-        //this.dogX = startX;
+    public Dogs(int startX, int startY, int velocity) {
         this.dogPosY = startY;
         this.dogPosX = startX;
         this.direction = velocity;
-        this.game = theGame;
         dogImage = new ImageIcon(dogPic).getImage();
         moveTimer = new Timer((int) (1000 / velocity), new ActionListener() {
             @Override

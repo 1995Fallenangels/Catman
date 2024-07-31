@@ -9,9 +9,10 @@
  * 3) a scorekeeping component. This will show the score of the user
  * 4) a healthbar. This will show how many lives the kitten has left. The cat will have nine lives represented as hearts (because cats have 9 lives).
  * When the cat runs into a dog, the cat will lose 3 lives.
+ * when the player wins or loses and wants to restart the game, they need to press enter and they can restart the game
  *
  * @author gabriella bella rose bitju
- * @version 30/07
+ * @version 31/07
  */
 import javax.swing.*;
 import java.awt.*;
@@ -75,6 +76,8 @@ public class TheGame extends JPanel implements KeyListener  {
     String downCat = "ragdollDown.png"; //this is a png of the cat facing down
     String upCat = "ragdollUp.png"; //png of cat facing up
     String newHeartsPic = "newHearts.png";
+    String puppyPic = "puppy.png";//used in the losing screen
+    String kittyPic = "kitty.png";//used in the winning screen
     int diameter = 5;//diameter of the black dot in the middle
     int fishDiameter = 18;//diameter of the 'power up' pellets/fish
     int catPosX = 14;//the x coordinate of the cat
@@ -95,12 +98,12 @@ public class TheGame extends JPanel implements KeyListener  {
     boolean isLost = false;//this boolean is used for if the player lost
     boolean paintDogs = true;//boolean that says to paint the dogs
     boolean isWon = false;//this boolean is used for if the player won
-    Dogs[] dogs = {new Dogs(5, 6, 2, this)
-            , new Dogs(20, 6, 1, this)
-            , new Dogs(20, 21, 2, this)
-            , new Dogs(5, 21, 2, this)
-            , new Dogs(29, 15, 3, this)
-            , new Dogs( 11, 15, 3, this)};//I initialized the dogs here. I have made 6 dogs. I've set their spawn points and velocities.
+    Dogs[] dogs = {new Dogs(5, 6, 2)
+            , new Dogs(20, 6, 1)
+            , new Dogs(20, 21, 2)
+            , new Dogs(5, 21, 2)
+            , new Dogs(29, 15, 3)
+            , new Dogs( 11, 15, 3)};//I initialized the dogs here. I have made 6 dogs. I've set their spawn points and velocities.
     private Timer timer; // Timer field
     private Timer catTimer;//
     private Timer removePowerUpTimer;//
@@ -137,8 +140,7 @@ public class TheGame extends JPanel implements KeyListener  {
             //this timer will print everything every 15 milliseconds
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                repaint(); // Call repaint every 15 millisecond
+                repaint(); //Call repaint every 15 millisecond
             }
         });
         //creating the removePowerUpTimer timer
@@ -185,22 +187,22 @@ public class TheGame extends JPanel implements KeyListener  {
         Image heartImage = heartIcon.getImage();
         Image modifiedHeartImage = heartImage.getScaledInstance((cellSize * 3),(cellSize * 3), Image.SCALE_SMOOTH);//resizing the png
         heartIcon = new ImageIcon(modifiedHeartImage);
-        heartIcon.paintIcon(this, g2,  x+100, y+50 );//printing the hearts under the text
+        heartIcon.paintIcon(this, g2,  x+100, y+50 );//printing the hearts under the instructions text
         //now I want to print out the cat on the screen
         ImageIcon catIcon = new ImageIcon(catPic);
         Image catImage = catIcon.getImage();
-        Image modifiedCatImage = catImage.getScaledInstance(cellSize*9 , cellSize*9 , Image.SCALE_SMOOTH);//resizing the png to fit the roads.
+        Image modifiedCatImage = catImage.getScaledInstance(cellSize*9 , cellSize*9 , Image.SCALE_SMOOTH);//resizing the png to make it large
         catIcon = new ImageIcon(modifiedCatImage);
         x= this.getWidth()/2 - catIcon.getIconWidth()/2;
-        catIcon.paintIcon(this, g2, x, y - 245);//printing the cat in the center of cell 5.
+        catIcon.paintIcon(this, g2, x, y - 245);//printing the cat above the Catman title
         // print instructions
-        y +=  60;
+        y +=  60;//make it print below catman
         g2.drawString("Press Enter to Start", x, y);
     }
     // this is the paint component which prints out basically everything except the title screen
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        super.paintComponent(g);//getting the paint component
         Graphics2D g2 = (Graphics2D) g;
         //we need to print out the cat score
         try {
@@ -229,18 +231,33 @@ public class TheGame extends JPanel implements KeyListener  {
                 g2.fillRect(0,0,this.getWidth(),this.getHeight());
                 //draw the text
                 Font oldFont = g2.getFont();
-                Font textFont = oldFont.deriveFont(72f);
+                Font textFont = oldFont.deriveFont(68f);
                 g2.setFont(textFont);
                 String text = "You won the game!";
                 int x = this.getWidth() / 2 - g2.getFontMetrics().stringWidth(text) / 2;
                 int y = (getHeight()  / 2);
-                g2.setColor(new Color	(255,208,237));
+                g2.setColor(new Color(255,208,237));
                 g2.drawString(text,x,y);//drawing the winning text
+                //print instructions text
+                //setting color
+                g2.setColor(new Color(0,0,0));
+                //setting font and font size
+                Font instructionsText = g2.getFont();
+                Font instructionsFont = instructionsText.deriveFont(30f);
+                g2.setFont(instructionsFont);
+                g2.drawString("press enter to restart the game", 95 , y+40);
+                //now I want to print out a cat photo
+                ImageIcon kittyIcon = new ImageIcon(kittyPic);
+                Image kittyImage = kittyIcon.getImage();
+                Image modifiedKittyImage = kittyImage.getScaledInstance((kittyIcon.getIconWidth())/4 , (kittyIcon.getIconHeight())/4 , Image.SCALE_SMOOTH);//resizing the png to make it large
+                kittyIcon = new ImageIcon(modifiedKittyImage);
+                x= this.getWidth()/2 - kittyIcon.getIconWidth()/2;
+                kittyIcon.paintIcon(this, g2, x, y -200);//printing the cat above the Catman title
             }
             if(isLost) {//but if the player lost then...
                 //draw the dying screen
                 //set the bg color
-                g2.setColor(new Color (0,0,0));//to black
+                g2.setColor(new Color (255,255,255));//to black
                 g2.fillRect(0,0,this.getWidth(),this.getHeight());
                 //draw the text
                 Font oldFont = g2.getFont();
@@ -249,11 +266,28 @@ public class TheGame extends JPanel implements KeyListener  {
                 String text = "you lost the game";
                 int x = this.getWidth() / 2 - g2.getFontMetrics().stringWidth(text) / 2;
                 int y = (getHeight()  / 2);
-                g2.setColor(new Color	(255,208,237));
+                g2.setColor(new Color	(0,0,0));
                 g2.drawString(text,x,y);//it will print out the losing text
+                //print instructions text
+                //set color
+                g2.setColor(new Color(255,208,237));
+                //setting font and font size
+                Font instructionsText = g2.getFont();
+                Font instructionsFont = instructionsText.deriveFont(30f);
+                g2.setFont(instructionsFont);
+                g2.drawString("press enter to restart the game", 95, y+45);//prints out instructions
+                //now I want to print out a dog photo
+                ImageIcon puppyIcon = new ImageIcon(puppyPic);
+                Image puppyImage = puppyIcon.getImage();
+                Image modifiedPuppyImage = puppyImage.getScaledInstance((puppyIcon.getIconWidth())/4 , (puppyIcon.getIconHeight())/4 , Image.SCALE_SMOOTH);//resizing the png to make it large
+                puppyIcon = new ImageIcon(modifiedPuppyImage);
+                x= this.getWidth()/2 - puppyIcon.getIconWidth()/2;
+                puppyIcon.paintIcon(this, g2, x, y + 55);//printing the cat above the Catman title
+
             }
             return;
         }
+        //now i need to print out the hearts
         g2.setColor(Color.WHITE);
         g2.fillRect(0, cellSize, 10*cellSize, cellSize+10);//this prints a white bg screen behind the hearts
         //when the player loses a life, this will cover 3 hearts
@@ -329,7 +363,7 @@ public class TheGame extends JPanel implements KeyListener  {
             default:
                 throw new IllegalStateException("Unexpected value: " + gameState);
         }
-        if(catScore >= 52000){//if the player reaches 52000 points
+        if(catScore >= 800){//if the player reaches 52000 points
             isWon = true;//the player wins the game
             isGameRunning = false;//the game will stop running.
         }
@@ -486,8 +520,14 @@ public class TheGame extends JPanel implements KeyListener  {
         if(key == KeyEvent.VK_ENTER && !isLost) {//if the player pressed enter and the player hasn't lost (this is for the title screen)
             isGameRunning = true;//the game starts to run
         }
+        if(key == KeyEvent.VK_ENTER && isWon){//if the player presses enter and the player won, the game will restart
+            restartGame();//calls restart game function
+        }
+        if (key == KeyEvent.VK_ENTER && isLost){//if the player presses enter and the player lost, the game will restart
+            restartGame();//calls the restart game function
+        }
         if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {//if the player presses the up arrow or the 'w' key
-            if (!(maze[catPosY - 1][catPosX] == 0 && !(maze[catPosY - 1][catPosX] == 4))) {//and if the block/cell above is not a wall and it's not a 4 (out of bounds for cats)
+            if (!(maze[catPosY - 1][catPosX] == 0) && !(maze[catPosY - 1][catPosX] == 4)) {//and if the block/cell above is not a wall and it's not a 4 (out of bounds for cats)
                 direction = KeyEvent.VK_UP;//the cats direction will go up
             }
         }
@@ -527,6 +567,59 @@ public class TheGame extends JPanel implements KeyListener  {
         // TODO Auto-generated method stub
 
     }
+    //creating the restart game function
+    void restartGame() {
+        lives = 3;//sets the lives back to 3
+        //sets the maze to its original state
+        maze = new int[][] {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+                {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0},
+                {0, 2, 0, 4, 4, 0, 1, 0, 4, 4, 4, 0, 1, 0, 0, 1, 0, 4, 4, 4, 0, 1, 0, 4, 4, 0, 2, 0},
+                {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0},
+                {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+                {0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0},
+                {0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0},
+                {0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0},
+                {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+                {4, 4, 4, 4, 4, 0, 1, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 1, 0, 4, 4, 4, 4, 4},
+                {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
+                {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 4, 4, 4, 4, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
+                {0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+                {3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3},
+                {0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 4, 4, 4, 4, 4, 4, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+                {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 4, 4, 4, 4, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
+                {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
+                {4, 4, 4, 4, 4, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 4, 4, 4, 4, 4},
+                {0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+                {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+                {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0},
+                {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0},
+                {0, 2, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 5, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 2, 0},
+                {0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0},
+                {0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0},
+                {0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0},
+                {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+                {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+                {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},};
+        //setting everything back to default, this will make the title screen show
+        isGameRunning = false;
+        isLost = false;
+        isWon=false;
+        paintDogs = true;
+        //initialising the dogs again
+        dogs = new Dogs[] {new Dogs(5, 6, 2)
+                , new Dogs(20, 6, 1)
+                , new Dogs(20, 21, 2)
+                , new Dogs(5, 21, 1)
+                , new Dogs(29, 15, 3)};
+        //set the cats coordinates back to its respawn point
+        catPosX = catStartX;
+        catPosY = catStartY;
+        //set the cat score back to 0
+        catScore = 0;
+    }
+
 
 }
  
