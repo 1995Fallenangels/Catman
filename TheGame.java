@@ -9,7 +9,15 @@
  * 3) a scorekeeping component. This will show the score of the user
  * 4) a healthbar. This will show how many lives the kitten has left. The cat will have nine lives represented as hearts (because cats have 9 lives).
  * When the cat runs into a dog, the cat will lose 3 lives.
- * when the player wins or loses and wants to restart the game, they need to press enter and they can restart the game
+ * when the player wins or loses and wants to restart the game, they need to press enter then they can restart the game
+ * here is a link to the photos I used that I got from KindPNG.com
+ * for the cat pic on the winning screen:
+ *  https://www.kindpng.com/imgv/iRbiToT_persian-cat-minuet-cat-maine-coon-munchkin-cat/
+ * for the puppy pic on the losing screen:
+ *  https://www.kindpng.com/imgv/TixTTh_dogs-dogpng-animals-doggo-carefree-golden-retriever-transparent/
+ * for the dog enemy pics:
+ *  https://www.kindpng.com/imgv/hTRwmhJ_cat-and-dog-sprites-pixel-dog-sprite-sheet/
+ * for the cat character and the heart picture for the health bar I made myself on pixelArt
  *
  * @author gabriella bella rose bitju
  * @version 01/08
