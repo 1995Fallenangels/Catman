@@ -428,7 +428,7 @@ public class TheGame extends JPanel implements KeyListener  {
         } else if (maze[catPosY - 1][catPosX] == 6) {//if the block below
             catPic = upCat;//make cat face up
             catPosY--;//the y position of the cat will decrease by one making the cat move upwards
-            catScore += 2000;//the cats score will increase by 2000 each time it eats a big power up pellet
+            catScore += 2400;//the cats score will increase by 2000 each time it eats a big power up pellet
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY + 1][catPosX] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road). This creates the illusion that the cat ate the big red dot
         }
@@ -455,7 +455,7 @@ public class TheGame extends JPanel implements KeyListener  {
         } else if (maze[catPosY + 1][catPosX] == 6) {
             catPic = downCat;//the cat will face downwards
             catPosY++;//the y position of the cat will increase by one making the cat move downwards
-            catScore += 2000;//the cats score will increase by 2000 each time it eats a big power up pellet
+            catScore += 2400;//the cats score will increase by 2000 each time it eats a big power up pellet
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY - 1][catPosX] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road). This creates the illusion that the cat ate the dot
         }
@@ -489,7 +489,7 @@ public class TheGame extends JPanel implements KeyListener  {
         } else if (maze[catPosY][catPosX - 1] == 6) {
             catPic = leftCat;//the cat will face left
             catPosX--;//the x position of the cat will decrease by one making the cat move left
-            catScore += 2000;//the cats score will increase by 2000 each time it eats a big power up pellet
+            catScore += 2400;//the cats score will increase by 2000 each time it eats a big power up pellet
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY][catPosX + 1] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road).
         }
