@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Catman">
+    <output-path>$PROJECT_DIR$/out/artifacts/Catman</output-path>
+    <root id="archive" name="Catman.jar" />
+  </artifact>
+</component>
