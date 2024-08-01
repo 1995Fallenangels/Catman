@@ -1,5 +1,6 @@
 /**
  * Write a description of class TheGame here.
+ * who, what, why, when
  * This is the code for the game 'Catman' I'm creating for my computer science assignment. Catman is inspired by the game Pacman.
  * In this game, a cat is being chased by dogs. When the cat gets caught by a dog, the cat loses 3 lives. The cat has 9 lives in total.
  * There will be fish the cat can eat.
@@ -18,9 +19,21 @@
  * for the dog enemy pics:
  *  https://www.kindpng.com/imgv/hTRwmhJ_cat-and-dog-sprites-pixel-dog-sprite-sheet/
  * for the cat character and the heart picture for the health bar I made myself on pixelArt
+ * The game starts with a title screen which displays the cat character and a text of the title “Catman” then a text will say “press enter to start”.
+ * Once the player presses enter, everything will be printed out nicely and the game should start.
+ * The cat will need to move around the whole maze to collect the dots/pellets.
+ * A small dot is 200 points,a bigger dot is 400 points, and the biggest dot is worth 2400 points. These points add up to about 52000 points.
+ * In total the cat will have 9 hearts because “cats have nine lives”. However, when the cat bumps into a dog, it will lose three hearts.
+ * This is because if the cat has 9 lives then the game will play on too long.
+ * If the player reaches 52000 points before it loses its lives, then the player wins.
+ * When the player wins, there will be a winning screen that appears. It will say “you won the game! Press enter to restart the game”.
+ * If the player loses, there will be a losing screen that appears. It will say “you lost the game” “Press enter to restart the game”.
+ * When the player presses restart, it will show the title screen again and so it repeats itself.
+ *
+ * My relevant implications are : intellectual property, aesthetics, usability, and functionality.
  *
  * @author gabriella bella rose bitju
- * @version 01/08
+ * @version 02/08
  */
 import javax.swing.*;
 import java.awt.*;
@@ -33,11 +46,10 @@ import java.io.IOException;
 
 public class TheGame extends JPanel implements KeyListener  {
 
-    int columns = 28;//this is setting the number of cell columns in the game panel to 21.
-    int rows = 50; //sets the cell rows in the game panel to 50.
     int mazeRows = 31;//this sets the maze rows to 31.
     int mazeColumns = 28;//this sets the maze columns to 28
     int cellSize = 23;// this sets the size of one cell to 23 pixels.
+    //honestly it's recommended that I add this large array into a jar file (?) but I haven't had the time to figure out how to do that
     public static int[][] maze =
             {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
@@ -70,15 +82,17 @@ public class TheGame extends JPanel implements KeyListener  {
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
                     {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},};
-    // this makes an array which the values of the maze and can hold a value of being a wall or a road that the cat and dogs can walk through.
+    // this makes an array which is values of the maze. It holds a value of being a wall or a road that the cat and dogs can walk through.
     //the road has little dots/pellets the cat can eat. When the cat eats the pellet the road become empty.
     //0 = a river. It acts as a wall the cat can't walk through.
     //1 = a road with a dot. Those are 200 points each
-    //2 = a road with a fish, which acts as a power up pellet for the kitty
-    //3 = a road without a dot
-    //4 = a road that the cat doesn't go in, and only the dogs can go in
-    final static int yOffset = 60;//added this because if I don't, there's no distance between the window bar and the frame and the top part of the frame isn't seen.
-    int gameState = 1; // this states the game state to 0 which is the title screen
+    //2 = a road with a fish, which acts as a power up pellet for the kitty. It makes the cat go faster and is also worth more points.
+    //3 = a road without a dot (an empty road)
+    //4 = a road that the cat doesn't go in, and only the dogs can go walk through
+    final static int yOffset = 60;//added this because if I don't, there's no distance between the window bar and the top part of the frame. (the maze will be cut off)
+    //also added a space so that I have room to print out the hearts, catScore, and little text.
+    int gameState = 1; // this makes the game state = 1 which means the game plays
+    //originally, I was going to make the gameState = 0 for the title screen, = 1, for when the game starts, =2 when the game ends, but I changed the game logics along the way.
     String leftCat = "img/ragdollLeft.png"; //this is a png of the cat facing left
     String rightCat = "img/ragdollRight.png"; //this is a png of the cat facing right
     String downCat = "img/ragdollDown.png"; //this is a png of the cat facing down
@@ -86,7 +100,6 @@ public class TheGame extends JPanel implements KeyListener  {
     String newHeartsPic = "img/newHearts.png";
     String puppyPic = "img/puppy.png";//used in the losing screen
     String kittyPic = "img/kitty.png";//used in the winning screen
-
     int diameter = 5;//diameter of the black dot in the middle
     int fishDiameter = 18;//diameter of the 'power up' pellets/fish
     int catPosX = 14;//the x coordinate of the cat
@@ -107,21 +120,24 @@ public class TheGame extends JPanel implements KeyListener  {
     boolean isLost = false;//this boolean is used for if the player lost
     boolean paintDogs = true;//boolean that says to paint the dogs
     boolean isWon = false;//this boolean is used for if the player won
-    Dogs[] dogs = {new Dogs(5, 6, 2)
-            , new Dogs(20, 6, 1)
-            , new Dogs(20, 21, 2)
-            , new Dogs(5, 21, 2)
-            , new Dogs(29, 15, 3)
-            , new Dogs( 11, 15, 3)};//I initialized the dogs here. I have made 6 dogs. I've set their spawn points and velocities.
-    private Timer timer; // Timer field
-    private Timer catTimer;//
-    private Timer removePowerUpTimer;//
+    Dogs[] dogs = {new Dogs(6, 5, 2)
+            , new Dogs(6, 20, 1)
+            , new Dogs(21, 20, 2)
+            , new Dogs(21, 5, 2)
+            , new Dogs(15, 29, 3)
+            , new Dogs( 15, 11, 3)};//I initialized the dogs here. I have made 6 dogs. I've set their spawn points and velocities.
+    //this is an array of dogs to keep a reference for the dogs classes we initiated, so every re-print of the game we keep track of their positions and repaint them
+    //this is from my dogs constructor in my dogs class
+    private Timer timer; //It is responsible for re-rendering the game and a consistent and stable intervals
+    private Timer catTimer;//catTimer is a timer variable to control the movement calculations of the cat. It's responsible for changing its position every 1000/velocity millisecond
+    //both cat timer and timer are called when the game starts (aka the "Catman" class constructor is initiated)
+    private Timer removePowerUpTimer;//its job is to revert the cat's velocity into its original velocity after 4 seconds of it being called
+    //It is called in "PowerUp" function after setting the cat velocity into the powerUp velocity
 
     public TheGame() {
         this.addKeyListener(this);//adds key listener which basically does the code if you press a specific key on the keyboard. it listens to keyboard input
         setFocusable(true);//this needs to be set to true so that it will respond to the keyListener. Without focus, the game won't listen to keyboard input
         requestFocusInWindow(true);//make the window be able to focus
-        //cat timer is so that every (second/the cat velocity, or in this case, every 1/4th of a second) the game moves left if the player pressed left
         catTimer = new Timer(1000/catVelocity, new ActionListener() {
             //so every 1000 millisecond (1 second) divided by catVelocity (4) (1/4th of a second) it will do the following:
             //it will check the direction the player wants to go and make the cat position go that direction
@@ -144,12 +160,12 @@ public class TheGame extends JPanel implements KeyListener  {
                 }
             }
         });
-        //creating the printing out timer
+        //creating the timer that re-renders
         timer = new Timer(15, new ActionListener() {
-            //this timer will print everything every 15 milliseconds
+            //this timer will print everything every 15 milliseconds, currently it re-renders the game very 15 millisecond
             @Override
             public void actionPerformed(ActionEvent e) {
-                repaint(); //Call repaint every 15 millisecond
+                repaint(); //Call repaint every 15 millisecond (Will print out everything and update what the screen displays)
             }
         });
         //creating the removePowerUpTimer timer
@@ -168,14 +184,14 @@ public class TheGame extends JPanel implements KeyListener  {
         timer.start(); // Start the timer and prints out the maze, title screen, and basically everything else
         catTimer.start();// will start to check and set the cat's next direction.
     }
-    //drawing the title screen component
+    //the function which draws the title screen. It's called below.
     private void drawTitleScreen(Graphics2D g2) {
         //setting the bg color
         g2.setColor(new Color (255,255,255));
         g2.fillRect(0,0,this.getWidth(),this.getHeight());
         // draw the title text
         //setting the font
-        Font oldFont = g2.getFont();
+        Font oldFont = g2.getFont();//gets the existing minecraft font which is created before this function gets called below
         Font titleFont = oldFont.deriveFont(72f);
         g2.setFont(titleFont);
         String text = "Catman";
@@ -198,7 +214,7 @@ public class TheGame extends JPanel implements KeyListener  {
         heartIcon = new ImageIcon(modifiedHeartImage);
         heartIcon.paintIcon(this, g2,  x+100, y+50 );//printing the hearts under the instructions text
         //now I want to print out the cat on the screen
-        ImageIcon catIcon = new ImageIcon(catPic);
+        ImageIcon catIcon = new ImageIcon("img/ragdollLeft.png");
         Image catImage = catIcon.getImage();
         Image modifiedCatImage = catImage.getScaledInstance(cellSize*9 , cellSize*9 , Image.SCALE_SMOOTH);//resizing the png to make it large
         catIcon = new ImageIcon(modifiedCatImage);
@@ -213,9 +229,11 @@ public class TheGame extends JPanel implements KeyListener  {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);//getting the paint component
         Graphics2D g2 = (Graphics2D) g;
-        //we need to print out the cat score
         try {
-            //setting the font to a pixel-like font to suit the game's aesthetics
+            //we need to print out the cat score
+            //Although this part is for printing out the cat score, I put this code here first because the title screen gets its font from the cat score font
+            //this is where I create and set the font to the minecraft font so the title screen can get its font from here
+            //setting the font to a pixel-like font to suit the game's aesthetics/ pixel vibe
             Font minecraft = Font.createFont(Font.TRUETYPE_FONT, new File("Minecraft copy.ttf")).deriveFont(24f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(minecraft);
@@ -225,13 +243,16 @@ public class TheGame extends JPanel implements KeyListener  {
             g2.fillRect(25*cellSize, cellSize + pointOffset, 4*cellSize, cellSize);
             //printing the cat score in pink
             g2.setColor(Color.PINK);
+            //drawing the catScore
             g2.drawString(Integer.toString(catScore), 25 * cellSize, 2 * cellSize + pointOffset);
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
+        //we need to print out the title screen
         if(!isGameRunning) {//if the game isn't running yet
             if(!isLost && !isWon) {//and if the game hasn't been lost or won yet
-                drawTitleScreen(g2);//then draw the title screen
+                //(these if statements makes the title screen print first)
+                drawTitleScreen(g2);//calls this function to draw the title screen.
             }
             if(isWon){//but if the player won then...
                 //draw the winning screen
@@ -239,6 +260,7 @@ public class TheGame extends JPanel implements KeyListener  {
                 g2.setColor(new Color (255,255,255));//to white
                 g2.fillRect(0,0,this.getWidth(),this.getHeight());
                 //draw the text
+                //getting the old font
                 Font oldFont = g2.getFont();
                 Font textFont = oldFont.deriveFont(68f);
                 g2.setFont(textFont);
@@ -297,24 +319,14 @@ public class TheGame extends JPanel implements KeyListener  {
             return;
         }
         //now i need to print out the hearts
+        //this prints a white bg screen behind the hearts first
         g2.setColor(Color.WHITE);
-        g2.fillRect(0, cellSize, 10*cellSize, cellSize+10);//this prints a white bg screen behind the hearts
+        g2.fillRect(0, cellSize, 10*cellSize, cellSize+10);
         //when the player loses a life, this will cover 3 hearts
         // EDIT: when I changed to JPanel, now the hearts just don't print out when you lose a life because JPanel repaints it
-        //Before I changed to JPanel, the white bg would print over the heart everytime you lost a life (to hide the heart).
-        //now I need to add a text that you have 9 hearts because cats have 9 lives, but you lose 3 hearts everytime you lose a life.
-        //I need to clarify this to my players. I added this little text because when my friend was trialling my game, he said to add a little text to explain that in case the player is confused.
-        //set a pink bg behind the text to make sure it shows
-        g2.setColor(new Color(255, 238, 238));
-        g2.fillRect(2, 12, 20*cellSize, 13);
-        //setting font size and color
-        Font explanationText = g2.getFont();
-        Font explanationFont = explanationText.deriveFont(11f);
-        g2.setFont(explanationFont);
-        g2.setColor(new Color(0,0,0));
-        //draw the explanation text
-        g2.drawString("You have 9 hearts because Cats have 9 lives, but you lose 3 hearts everytime you die.", 2, 23);
-        for (int h = 0; h < lives; h++) {
+        //Before I changed to JPanel (when I still had JFrame), the white bg would print over the heart everytime you lost a life (to hide the heart).
+        for (int h = 0; h < lives; h++) {//the amount of hearts drawn depends on how many lives the player has
+            //setting the png into an icon then to an image so it can be resized then turned back to an icon so it can be painted (printed)
             ImageIcon heartIcon = new ImageIcon(newHeartsPic);
             Image heartImage = heartIcon.getImage();
             Image modifiedHeartImage = heartImage.getScaledInstance((cellSize * 3), (cellSize * 3), Image.SCALE_SMOOTH);//resizing the hearts png
@@ -323,13 +335,27 @@ public class TheGame extends JPanel implements KeyListener  {
             //the x coordinates of the hearts will depend on the h (number of lives the cat has) multiplied by the cellSize
             //as the lives decrease, the h decreases, and the number of hearts printed will decrease.
         }
+        //now I need to add a text that you have 9 hearts (because cats have 9 lives), but you lose 3 hearts everytime you lose a life.
+        //I need to clarify this to my players. I added this little text because when my friend was trialling my game, he said to add a little text to explain that in case the player is confused.
+        //set a pink bg behind the text to make sure it shows
+        g2.setColor(new Color(255, 238, 238));
+        g2.fillRect(2, 12, 20*cellSize, 13);
+        //setting font, font size, and color
+        Font explanationText = g2.getFont();
+        Font explanationFont = explanationText.deriveFont(11f);
+        g2.setFont(explanationFont);
+        g2.setColor(new Color(0,0,0));
+        //draw the explanation text
+        g2.drawString("You have 9 hearts because Cats have 9 lives, but you lose 3 hearts everytime you die.", 2, 23);
+        //next i need to draw the cells/maze
+        //this visualizes the array
         switch (gameState) {
-            case 1: //originally, I was going to make the gameState = 0 for the title screen, = 1, for when the game starts, =2 when the game ends, but I changed it along the way.
-                //now I need to print the array
+            case 1: //originally, I was going to make the gameState = 0 for the title screen, = 1, for when the game starts, =2 when the game ends, but I changed the game logics along the way.
+                //now I need to print the array/maze
                 for (int i = 0; i < mazeColumns; i++) {
                     for (int j = 0; j < mazeRows; j++) {
                         switch (maze[j][i]) {
-                            case 0://sets all the 0's to a river that acts as a wall
+                            case 0://sets all the 0's to a river that acts as a wall for the cats and dogs not to go through
                                 g2.setColor(new Color(62, 164, 240));//setting the colour to blue for water
                                 g2.fillRect(i * cellSize, j * cellSize + yOffset, cellSize, cellSize);//this print out the wall
                                 break;
@@ -377,7 +403,6 @@ public class TheGame extends JPanel implements KeyListener  {
                                 g2.fillRect(i * cellSize, j * cellSize + yOffset, cellSize, cellSize);//creates the background pink
                                 g2.setColor(new Color(255, 32, 25));
                                 g2.fillOval(i * cellSize + (cellSize - fishDiameter) / 2, j * cellSize + (cellSize - fishDiameter) / 2 + yOffset, fishDiameter, fishDiameter);//creates a big red dot as another power up pellet
-
                                 break;
                         }
                     }
@@ -390,14 +415,15 @@ public class TheGame extends JPanel implements KeyListener  {
             isWon = true;//the player wins the game
             isGameRunning = false;//the game will stop running.
         }
-        if(paintDogs) {//where I paint the doggies
+        //where I paint the doggies
+        if(paintDogs) {
             for (int k=0; k<dogs.length; k++){
                 dogs[k].paint(g2);//paints the dogs
-                if(dogs[k].getDogPosX() == catPosY  && dogs[k].getDogPosY() == catPosX) {//If the cat and a dog are in the same position it will do the following
+                if(dogs[k].getDogPosY() == catPosY  && dogs[k].getDogPosX() == catPosX) {//If the cat and a dog are in the same position it will do the following
                     //If the locations of the dogs are the same as the cat it means the cat got caught!
-                    System.out.println("CAT CAUGHT   " + dogs[k].getDogPosX() + "  " + dogs[k].getDogPosY());
-                    //dog X and dog Y accidentally switched while coding.
-                    maze[catPosY][catPosX] = 1;//the cats position will be a 3 (an empty road)
+                    //System.out.println("CAT CAUGHT   " + dogs[k].getDogPosX() + "  " + dogs[k].getDogPosY()); //for testing purposes
+                    //dog X and dog Y accidentally switched while coding. (update: now fixed)
+                    maze[catPosY][catPosX] = 1;//the cats position where the cat died will be a 1 (a road with a dot)
                     catPosX = catStartX;//then the cat will respawn back to its original position, the x coordinate will be where it started
                     catPosY = catStartY;//the cat's y position will be where it started
                     left();//the cat will automatically walk to the left
@@ -414,6 +440,13 @@ public class TheGame extends JPanel implements KeyListener  {
         }
 
     }
+    private void PowerUpCat() {//this function is called when the cat eats a power pellet that allows it to move faster.
+        // If there is a timer already running, stop  it.
+        removePowerUpTimer.stop(); //I added the removePowerUpTimer function here because of what I have explained earlier/above.
+        catTimer.setDelay(1000/catPowerVelocity); //now make the cat faster
+        removePowerUpTimer.start(); //then start the timer again, after 4 seconds it will make the cat go back to its normal speed
+    }
+
     public void up() {// this is an up function. It's called when the player presses up
         if (maze[catPosY - 1][catPosX] == 1) {//checks if the road/cell above is equal to one (a road with a dot).
             catPic = upCat;//the cat will face upwards
@@ -436,12 +469,12 @@ public class TheGame extends JPanel implements KeyListener  {
         } else if (maze[catPosY - 1][catPosX] == 6) {//if the block below
             catPic = upCat;//make cat face up
             catPosY--;//the y position of the cat will decrease by one making the cat move upwards
-            catScore += 2400;//the cats score will increase by 2000 each time it eats a big power up pellet
+            catScore += 2400;//the cats score will increase by 2400 each time it eats a big power up pellet
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY + 1][catPosX] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road). This creates the illusion that the cat ate the big red dot
         }
     }
-    public void down() {
+    public void down() {//moving down function
         if(maze[catPosY + 1][catPosX] == 1) {//checks if the road/cell below is equal to one (a road with a dot).
             catPic = downCat;//the cat will face downwards
             catScore += 200;//the cats score will increase by 200 each time it eats a dot
@@ -463,12 +496,12 @@ public class TheGame extends JPanel implements KeyListener  {
         } else if (maze[catPosY + 1][catPosX] == 6) {
             catPic = downCat;//the cat will face downwards
             catPosY++;//the y position of the cat will increase by one making the cat move downwards
-            catScore += 2400;//the cats score will increase by 2000 each time it eats a big power up pellet
+            catScore += 2400;//the cats score will increase by 2400 each time it eats a big power up pellet
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY - 1][catPosX] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road). This creates the illusion that the cat ate the dot
         }
     }
-    public void left() {
+    public void left() {//moving left function
         if(catPosX-1 < 0) {//this is for the middle lane of the maze where the cat can teleport. this is if the cat is on the left side of the middle lane of the maze
             maze[catPosY][mazeColumns-1] = 5;//the cat will be printed on the opposite end of the maze but in the same middle lane
             maze[catPosY][catPosX] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road). This creates the illusion that the cat ate the dot
@@ -497,13 +530,13 @@ public class TheGame extends JPanel implements KeyListener  {
         } else if (maze[catPosY][catPosX - 1] == 6) {
             catPic = leftCat;//the cat will face left
             catPosX--;//the x position of the cat will decrease by one making the cat move left
-            catScore += 2400;//the cats score will increase by 2000 each time it eats a big power up pellet
+            catScore += 2400;//the cats score will increase by 2400 each time it eats a big power up pellet
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY][catPosX + 1] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road).
         }
     }
 
-    public void right() {
+    public void right() {//moving right function
         if(catPosX+1 > mazeColumns-1) {//this is for the middle lane of the maze where the cat can teleport.
             maze[catPosY][1] = 5;//the cat will be printed on the opposite end of the maze but in the same middle lane
             maze[catPosY][catPosX] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road). This creates the illusion that the cat ate the dot
@@ -530,7 +563,7 @@ public class TheGame extends JPanel implements KeyListener  {
         } else if (maze[catPosY][catPosX + 1] == 6) {
             catPic = rightCat;//the cat will face right
             catPosX++;//the x position of the cat will increase by one making the cat move right
-            catScore += 2400;//the cats score will increase by 2000 each time it eats a big power up pellet
+            catScore += 2400;//the cats score will increase by 2400 each time it eats a big power up pellet
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY][catPosX - 1] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road).
         }
@@ -571,13 +604,6 @@ public class TheGame extends JPanel implements KeyListener  {
         }
     }
 
-
-    private void PowerUpCat() {//this function is called when the cat eats a power pellet that allows it to move faster.
-        removePowerUpTimer.stop(); //I added the removePowerUpTimer function here because of what I have explained earlier.
-        // If there is a timer already running, stop  it.
-        catTimer.setDelay(1000/catPowerVelocity); //now make the cat faster
-        removePowerUpTimer.start(); //then start the timer again, after 4 seconds it will make the cat go back to its normal speed
-    }
     @Override
     public void keyTyped(KeyEvent e) {
         // TODO Auto-generated method stub
@@ -630,12 +656,13 @@ public class TheGame extends JPanel implements KeyListener  {
         isLost = false;
         isWon=false;
         paintDogs = true;
-        //initialising the dogs again
-        dogs = new Dogs[] {new Dogs(5, 6, 2)
-                , new Dogs(20, 6, 1)
-                , new Dogs(20, 21, 2)
-                , new Dogs(5, 21, 1)
-                , new Dogs(29, 15, 3)};
+        //initialising the dogs again so they can restart at the same place
+        dogs =new Dogs[] {new Dogs(6, 5, 2) ,
+                new Dogs(6, 20, 1) ,
+                new Dogs(21, 20, 2) ,
+                new Dogs(21, 5, 2) ,
+                new Dogs(15, 29, 3) ,
+                new Dogs( 15, 11, 3)};
         //set the cats coordinates back to its respawn point
         catPosX = catStartX;
         catPosY = catStartY;

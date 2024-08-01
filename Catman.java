@@ -12,9 +12,10 @@
  * Now JPanel repaints the screen (the maze, cat, dogs, etc.) almost every second.
  * That is like the photo inside is changing but keeping the same frame (JFrame).
  * Now the screen doesn't flicker and the graphics are a lot smoother than before!!! YAY!
+ * JPanel has automatic double buffering and JFrame doesn't.
  *
  * @author Gabriella Bella Rose Bitju
- * @version 01/08
+ * @version 02/08
  */
 import javax.swing.JFrame;
 
