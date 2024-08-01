@@ -49,7 +49,7 @@ public class TheGame extends JPanel implements KeyListener  {
     int mazeRows = 31;//this sets the maze rows to 31.
     int mazeColumns = 28;//this sets the maze columns to 28
     int cellSize = 23;// this sets the size of one cell to 23 pixels.
-    //honestly it's recommended that I add this large array into a jar file (?) but I haven't had the time to figure out how to do that
+    //made the maze variable public and static so all the other classes could see it. The dogs class uses the maze class to check their surroundingsf
     public static int[][] maze =
             {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
@@ -109,7 +109,7 @@ public class TheGame extends JPanel implements KeyListener  {
     String catPic = leftCat;//setting the initial cat position to left
     int pointOffset = 10;// this is used to set the points coordinates to be 10 pixels below because without this y offset, the top of the panel will cover it.
     int catVelocity = 4; //Initialize the velocity variable of the cat private
-    int catPowerVelocity = 6;// when the cat gets a power up pellet, the velocity will be increase, making the cat go faster
+    int catPowerVelocity = 8;// when the cat gets a power up pellet, the velocity will be increase, making the cat go faster
     int powerUpDuration = 4;//Power up duration in seconds
     private int direction = 0; //The current direction of the cat
     int catScore;//this is the catScore
@@ -171,8 +171,7 @@ public class TheGame extends JPanel implements KeyListener  {
         //creating the removePowerUpTimer timer
         //I created this because let's say, a cat eats a pellet right, I want it to go fast for only 4 seconds.
         //But what if the player eats ANOTHER power up pellet within those 4 seconds?
-        //this removePowerUpTimer will turn off the existing timer (which was turned on because the cat ate the first power up pellet)
-        //then it will start a new timer. (this is coded below in my powerUpCat function.)
+        //this removePowerUpTimer will revert the cats' velocity back to its original velocity after the powerUpDuration has passed (4 seconds)
         removePowerUpTimer = new Timer(1000 * powerUpDuration, new ActionListener() {
             //basically after 4 seconds (after 1 second x powerUpDuration) it will do the following:
             @Override
@@ -227,7 +226,7 @@ public class TheGame extends JPanel implements KeyListener  {
     // this is the paint component which prints out basically everything except the title screen
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);//getting the paint component
+        super.paintComponent(g);//initializing the first paint before drawing the custom graphics. (clearing the page before painting it again)
         Graphics2D g2 = (Graphics2D) g;
         try {
             //we need to print out the cat score
@@ -349,11 +348,9 @@ public class TheGame extends JPanel implements KeyListener  {
         g2.drawString("You have 9 hearts because Cats have 9 lives, but you lose 3 hearts everytime you die.", 2, 23);
         //next i need to draw the cells/maze
         //this visualizes the array
-        switch (gameState) {
-            case 1: //originally, I was going to make the gameState = 0 for the title screen, = 1, for when the game starts, =2 when the game ends, but I changed the game logics along the way.
+        for (int i = 0; i < mazeColumns; i++) {
+            for (int j = 0; j < mazeRows; j++) {
                 //now I need to print the array/maze
-                for (int i = 0; i < mazeColumns; i++) {
-                    for (int j = 0; j < mazeRows; j++) {
                         switch (maze[j][i]) {
                             case 0://sets all the 0's to a river that acts as a wall for the cats and dogs not to go through
                                 g2.setColor(new Color(62, 164, 240));//setting the colour to blue for water
@@ -407,10 +404,6 @@ public class TheGame extends JPanel implements KeyListener  {
                         }
                     }
                 }
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + gameState);
-        }
         if(catScore >= 52000){//if the player reaches 52000 points
             isWon = true;//the player wins the game
             isGameRunning = false;//the game will stop running.
@@ -442,7 +435,7 @@ public class TheGame extends JPanel implements KeyListener  {
     }
     private void PowerUpCat() {//this function is called when the cat eats a power pellet that allows it to move faster.
         // If there is a timer already running, stop  it.
-        removePowerUpTimer.stop(); //I added the removePowerUpTimer function here because of what I have explained earlier/above.
+        removePowerUpTimer.stop(); //I added the removePowerUpTimer function here because if there's a timer already running it would stop the cat before the current pellets duration has passed
         catTimer.setDelay(1000/catPowerVelocity); //now make the cat faster
         removePowerUpTimer.start(); //then start the timer again, after 4 seconds it will make the cat go back to its normal speed
     }
@@ -470,6 +463,7 @@ public class TheGame extends JPanel implements KeyListener  {
             catPic = upCat;//make cat face up
             catPosY--;//the y position of the cat will decrease by one making the cat move upwards
             catScore += 2400;//the cats score will increase by 2400 each time it eats a big power up pellet
+            PowerUpCat();//the power up function will be called (to make it faster only for 4 seconds).
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY + 1][catPosX] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road). This creates the illusion that the cat ate the big red dot
         }
@@ -496,6 +490,7 @@ public class TheGame extends JPanel implements KeyListener  {
         } else if (maze[catPosY + 1][catPosX] == 6) {
             catPic = downCat;//the cat will face downwards
             catPosY++;//the y position of the cat will increase by one making the cat move downwards
+            PowerUpCat();//the power up function will be called (to make it faster only for 4 seconds).
             catScore += 2400;//the cats score will increase by 2400 each time it eats a big power up pellet
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY - 1][catPosX] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road). This creates the illusion that the cat ate the dot
@@ -530,6 +525,7 @@ public class TheGame extends JPanel implements KeyListener  {
         } else if (maze[catPosY][catPosX - 1] == 6) {
             catPic = leftCat;//the cat will face left
             catPosX--;//the x position of the cat will decrease by one making the cat move left
+            PowerUpCat();//the power up function will be called (to make it faster only for 4 seconds).
             catScore += 2400;//the cats score will increase by 2400 each time it eats a big power up pellet
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY][catPosX + 1] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road).
@@ -563,6 +559,7 @@ public class TheGame extends JPanel implements KeyListener  {
         } else if (maze[catPosY][catPosX + 1] == 6) {
             catPic = rightCat;//the cat will face right
             catPosX++;//the x position of the cat will increase by one making the cat move right
+            PowerUpCat();//the power up function will be called (to make it faster only for 4 seconds).
             catScore += 2400;//the cats score will increase by 2400 each time it eats a big power up pellet
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY][catPosX - 1] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road).
@@ -602,19 +599,6 @@ public class TheGame extends JPanel implements KeyListener  {
                 direction = KeyEvent.VK_RIGHT;//cat will go right
             }
         }
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        // TODO Auto-generated method stub
-
     }
     //creating the restart game function
     void restartGame() {
@@ -656,7 +640,7 @@ public class TheGame extends JPanel implements KeyListener  {
         isLost = false;
         isWon=false;
         paintDogs = true;
-        //initialising the dogs again so they can restart at the same place
+        //initialising the dogs again, so they can restart at the same place
         dogs =new Dogs[] {new Dogs(6, 5, 2) ,
                 new Dogs(6, 20, 1) ,
                 new Dogs(21, 20, 2) ,
@@ -669,7 +653,18 @@ public class TheGame extends JPanel implements KeyListener  {
         //set the cat score back to 0
         catScore = 0;
     }
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // TODO Auto-generated method stub
 
+    }
+
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        // TODO Auto-generated method stub
+
+    }
 
 }
  

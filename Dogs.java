@@ -49,7 +49,7 @@ public class Dogs {
     public void move() {
         switch (direction) {
             //the X and Y's are mixed around!!! might fix soon...
-            //so many X and Y's that are mixed up idk if I can fix them all by tomorrow
+            //so many X and Y's that are mixed up idk if I can fix them all by tomorrow (update: fixed)
             case 0: // MOVE LEFT
                 if (canMove(dogPosX - 1, dogPosY)) {//first it checks if the dog can move to that block first.
                     //eg, this checks if the block/cell to it's left
@@ -80,10 +80,10 @@ public class Dogs {
     }
 //this is a function that checks if the dog can go to that column or not.
     //x and y's are switched around a lot during the beginning then I fixed it. I'm pretty sure some of the x and y's are still switched
-    //but I don't really want to change it around because it works well haha
+    //I don't really want to change it around because it works well haha
     //update: I have changed the X and Y's around, hopefully everything should be fine now
     private boolean canMove(int x, int y) {
-        int[][] maze = TheGame.maze;
+        int[][] maze = TheGame.maze;//here i get the public static maze (public and static so all the classes can see it)
         int mazeRows = maze.length;
         int mazeColumns = maze[0].length;
 //mazeRows and mazeColumns were switched and it caused a big error in making the dogs not walk out of bounds
@@ -99,10 +99,12 @@ public class Dogs {
         int[] possibleDirections = {0, 1, 2, 3};//the possible directions are left, right, up, and down.
         this.direction = possibleDirections[(int) (Math.random() * possibleDirections.length)];//then the directions get set to a random number (direction).
     }
-    public void paint(Graphics g) {
+    public void paint(Graphics g) {//this method is called from TheGame function using the dogs' reference
+        //so it's called everytime we do a repaint (in the repaint timer
         int cellSize = 23;
         int yOffset = 60;
         g.drawImage(dogImage, dogPosX * cellSize, dogPosY * cellSize + yOffset, cellSize, cellSize, null);
+        //draw the dog image on its current cell x and y position
     }
 }
 
