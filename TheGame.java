@@ -12,7 +12,7 @@
  * when the player wins or loses and wants to restart the game, they need to press enter and they can restart the game
  *
  * @author gabriella bella rose bitju
- * @version 31/07
+ * @version 01/08
  */
 import javax.swing.*;
 import java.awt.*;
@@ -71,13 +71,14 @@ public class TheGame extends JPanel implements KeyListener  {
     //4 = a road that the cat doesn't go in, and only the dogs can go in
     final static int yOffset = 60;//added this because if I don't, there's no distance between the window bar and the frame and the top part of the frame isn't seen.
     int gameState = 1; // this states the game state to 0 which is the title screen
-    String leftCat = "ragdollLeft.png"; //this is a png of the cat facing left
-    String rightCat = "ragdollRight.png"; //this is a png of the cat facing right
-    String downCat = "ragdollDown.png"; //this is a png of the cat facing down
-    String upCat = "ragdollUp.png"; //png of cat facing up
-    String newHeartsPic = "newHearts.png";
-    String puppyPic = "puppy.png";//used in the losing screen
-    String kittyPic = "kitty.png";//used in the winning screen
+    String leftCat = "img/ragdollLeft.png"; //this is a png of the cat facing left
+    String rightCat = "img/ragdollRight.png"; //this is a png of the cat facing right
+    String downCat = "img/ragdollDown.png"; //this is a png of the cat facing down
+    String upCat = "img/ragdollUp.png"; //png of cat facing up
+    String newHeartsPic = "img/newHearts.png";
+    String puppyPic = "img/puppy.png";//used in the losing screen
+    String kittyPic = "img/kitty.png";//used in the winning screen
+
     int diameter = 5;//diameter of the black dot in the middle
     int fishDiameter = 18;//diameter of the 'power up' pellets/fish
     int catPosX = 14;//the x coordinate of the cat
@@ -291,6 +292,20 @@ public class TheGame extends JPanel implements KeyListener  {
         g2.setColor(Color.WHITE);
         g2.fillRect(0, cellSize, 10*cellSize, cellSize+10);//this prints a white bg screen behind the hearts
         //when the player loses a life, this will cover 3 hearts
+        // EDIT: when I changed to JPanel, now the hearts just don't print out when you lose a life because JPanel repaints it
+        //Before I changed to JPanel, the white bg would print over the heart everytime you lost a life (to hide the heart).
+        //now I need to add a text that you have 9 hearts because cats have 9 lives, but you lose 3 hearts everytime you lose a life.
+        //I need to clarify this to my players. I added this little text because when my friend was trialling my game, he said to add a little text to explain that in case the player is confused.
+        //set a pink bg behind the text to make sure it shows
+        g2.setColor(new Color(255, 238, 238));
+        g2.fillRect(2, 12, 20*cellSize, 13);
+        //setting font size and color
+        Font explanationText = g2.getFont();
+        Font explanationFont = explanationText.deriveFont(11f);
+        g2.setFont(explanationFont);
+        g2.setColor(new Color(0,0,0));
+        //draw the explanation text
+        g2.drawString("You have 9 hearts because Cats have 9 lives, but you lose 3 hearts everytime you die.", 2, 23);
         for (int h = 0; h < lives; h++) {
             ImageIcon heartIcon = new ImageIcon(newHeartsPic);
             Image heartImage = heartIcon.getImage();
@@ -363,7 +378,7 @@ public class TheGame extends JPanel implements KeyListener  {
             default:
                 throw new IllegalStateException("Unexpected value: " + gameState);
         }
-        if(catScore >= 800){//if the player reaches 52000 points
+        if(catScore >= 52000){//if the player reaches 52000 points
             isWon = true;//the player wins the game
             isGameRunning = false;//the game will stop running.
         }
@@ -374,7 +389,7 @@ public class TheGame extends JPanel implements KeyListener  {
                     //If the locations of the dogs are the same as the cat it means the cat got caught!
                     System.out.println("CAT CAUGHT   " + dogs[k].getDogPosX() + "  " + dogs[k].getDogPosY());
                     //dog X and dog Y accidentally switched while coding.
-                    maze[catPosY][catPosX] = 3;//the cats position will be a 3 (an empty road)
+                    maze[catPosY][catPosX] = 1;//the cats position will be a 3 (an empty road)
                     catPosX = catStartX;//then the cat will respawn back to its original position, the x coordinate will be where it started
                     catPosY = catStartY;//the cat's y position will be where it started
                     left();//the cat will automatically walk to the left
@@ -507,7 +522,7 @@ public class TheGame extends JPanel implements KeyListener  {
         } else if (maze[catPosY][catPosX + 1] == 6) {
             catPic = rightCat;//the cat will face right
             catPosX++;//the x position of the cat will increase by one making the cat move right
-            catScore += 2000;//the cats score will increase by 2000 each time it eats a big power up pellet
+            catScore += 2400;//the cats score will increase by 2000 each time it eats a big power up pellet
             maze[catPosY][catPosX] = 5;//the cell/block it's moving to will be a five (5 = where the cat is printed). so the cat will be printed in the place it's going to
             maze[catPosY][catPosX - 1] = 3;//the previous block (the one it was on) will turn to a 3 (3 = an empty road).
         }

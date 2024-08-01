@@ -14,7 +14,7 @@
  * Now the screen doesn't flicker and the graphics are a lot smoother than before!!! YAY!
  *
  * @author Gabriella Bella Rose Bitju
- * @version 31/07
+ * @version 01/08
  */
 import javax.swing.JFrame;
 

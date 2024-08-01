@@ -3,7 +3,7 @@
  *  This is the dogs class. This is where I will sort out the dogs directions
  *  creating a separate dogs class will make things less cluttered.
  *  * @author gabriella bella rose Bitju
- *  * @version 30/07
+ *  * @version 01/08
  *  */
 import javax.swing.*;
 import java.awt.*;
@@ -11,10 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Dogs {
-    String upDog = "doggyUp.png";//png of dog facing up
-    String downDog = "doggyDown.png";//png of dog facing down
-    String rightDog = "doggyRight.png";//png of dog facing right
-    String leftDog = "doggyLeft.png";//png of dog facing left
+    String upDog = "img/doggyUp.png";//png of dog facing up
+    String downDog = "img/doggyDown.png";//png of dog facing down
+    String rightDog = "img/doggyRight.png";//png of dog facing right
+    String leftDog = "img/doggyLeft.png";//png of dog facing left
     private int dogPosX;//
     private int dogPosY;
     private int direction;
