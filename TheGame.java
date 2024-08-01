@@ -109,7 +109,7 @@ public class TheGame extends JPanel implements KeyListener  {
     String catPic = leftCat;//setting the initial cat position to left
     int pointOffset = 10;// this is used to set the points coordinates to be 10 pixels below because without this y offset, the top of the panel will cover it.
     int catVelocity = 4; //Initialize the velocity variable of the cat private
-    int catPowerVelocity = 8;// when the cat gets a power up pellet, the velocity will be increase, making the cat go faster
+    int catPowerVelocity = 7;// when the cat gets a power up pellet, the velocity will be increase, making the cat go faster
     int powerUpDuration = 4;//Power up duration in seconds
     private int direction = 0; //The current direction of the cat
     int catScore;//this is the catScore
